@@ -12,7 +12,6 @@ const Model = {
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield call(fakeAccountLogin, payload);
-      console.log(response)
     // Login successfully
   
       if (response.code == '200') {
@@ -61,7 +60,6 @@ const Model = {
   reducers: {
     changeLoginStatus(state, { payload }) {
       setAuthority(localStorage.getItem("name"));
-      console.log(localStorage.getItem("name"))
       return { ...state, status: localStorage.getItem("name"), type: "1" };
     },
   },

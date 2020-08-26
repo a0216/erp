@@ -26,7 +26,6 @@ const Login = props => {
 
   const handleSubmit = values => {
     const { dispatch } = props;
-    console.log(props)
     dispatch({
       type: 'login/login',
       payload: { ...values, type },

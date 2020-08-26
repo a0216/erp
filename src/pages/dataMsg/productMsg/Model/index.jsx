@@ -4,7 +4,6 @@ import { addProductMsg, upGoods } from '../../api';
 
 const Model = props => {
     const FormItem = Form.Item;
-    console.log(props)
     const [form] = Form.useForm();
 
     let title = "新建属性"
@@ -44,7 +43,7 @@ const Model = props => {
                 }
             })
         }
-        form.resetFields();
+        // form.resetFields();
     };
     return (
         <Modal

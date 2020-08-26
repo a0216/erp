@@ -43,10 +43,8 @@ const Model = props => {
        
     }, []);
     const handleChange = (e) => {
-        console.log(e)
     }
     const handleMsg = (e) => {
-        console.log(e)
     }
     const { modalVisible, onSubmit: handleAdd, onCancel } = props;
     const okHandle = async () => {
@@ -81,7 +79,7 @@ const Model = props => {
             })
         }
 
-        form.resetFields();
+        // form.resetFields();
     };
     return (
         <Modal

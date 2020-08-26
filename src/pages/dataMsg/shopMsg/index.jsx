@@ -21,7 +21,6 @@ export default () => {
   }, []);
   function handleClick(e){
     console.log('click ', e);
-    console.log(this);
 
   } 
  

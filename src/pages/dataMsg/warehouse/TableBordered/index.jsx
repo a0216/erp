@@ -28,7 +28,6 @@ const TableBordered = props => {
       content: '删除仓库',
       onOk() {
         delWareList({ method: "POST", data: { id: e} }).then(res => {
-          console.log(res)
           if (res.code == '200') {
             message.success("已删除")
             props.actionRef.current()
@@ -106,6 +105,7 @@ const TableBordered = props => {
           dataSource={props.wareList}
           bordered
           title={() => '仓库列表'}
+          pagination={false}
         />
         <Model
           onSubmit={async value => {

@@ -31,6 +31,9 @@ const Models = props => {
         {
             title: '基准价',
             dataIndex: 'cost_price',
+            render: (text) => {
+                return <span>{text / 100}</span>
+            }
         },
         {
             title: '备注',
@@ -48,8 +51,6 @@ const Models = props => {
                 if (res.id == item) {
                     selecList.push(res)
                     changeNowlist(selecList)
-                    //    console.log(selecList)
-                    //    props.changeList(selecList)
                     return selecList
                 }
             })

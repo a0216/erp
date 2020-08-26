@@ -7,8 +7,7 @@ import styles from './index.less';
 import TableBordered from '../payOrder/TableBordered';
 import { shopList, wareSelects } from '../../allNeed'
 
-import { payment, searchUser } from '../api'
-import { wareSelect } from '@/pages/warehouse/api';
+import { payment, searchUser,downLoads } from '../api'
 
 const { RangePicker } = DatePicker;
 const { Option } = Select
@@ -34,12 +33,16 @@ export default () => {
   const [loading, setLoading] = useState(true);
   const [createModalVisible, handleModalVisible] = useState(false);
   const [shopLists, changeshopList] = useState([]);
-  const [types, changeType] = useState(' ');
+  const [types, changeType] = useState('0');
   const [wareList, changetWare] = useState([]);
   const [paymentList, changepayment] = useState([]);
   const [userList, setuserList] = useState([]);
   const [sendUrl, changeUrl] = useState([])
-
+  const reast=e=>{
+    message.loading('已重置',1)
+    form.resetFields(); 
+    getData(types)
+  }
   const getData = (types) => {
     payment({ method: 'get' }, `?put=${types}`).then(res => {
       if (res.code == '200') {
@@ -50,7 +53,82 @@ export default () => {
       }
     })
   }
+  const exportAll=()=>{
+    fetch(`https://erpapi.owodian.com/api/warehouse/payment/export/info?all=1`,{
+        method:"get",
+        headers: {
+          "Authorization":`${JSON.parse(localStorage.getItem('tokenType'))} ${JSON.parse(localStorage.getItem('token'))}`,
+        },
+      }).then(res => res.blob()).then(blob => {
+        var a = document.createElement('a');
+        var url = window.URL.createObjectURL(blob);
+        var filename = '付款单.xls';
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    }).then(res=>{
+      message.loading('正在下载', 2.5)
+    })
+ 
+  }
   const actionRef = useRef(getData);
+  const exports=async()=>{
+    const fieldsValue = await form.validateFields();
+    let url = `?pay=${types}`;
+    function test(s) {
+      return s.charAt(s.length - 1) === '?';
+    }
+    if (fieldsValue.times) {
+      let startTime = Math.floor(fieldsValue.times[0]._d.getTime() / 1000);
+      let endTime = Math.floor(fieldsValue.times[1]._d.getTime() / 1000);
+      if (fieldsValue.times[0]) {
+        if (test(url)) {
+          url += `startTime=${startTime}`
+        } else {
+          url += `&startTime=${startTime}`
+        }
+      }
+      if (fieldsValue.times[1]) {
+        if (test(url)) {
+          url += `endTime=${endTime}`
+        } else {
+          url += `&endTime=${endTime}`
+        }
+      }
+    }
+
+    if (fieldsValue.code) {
+      if (test(url)) {
+        url += `code=${fieldsValue.code}`
+      } else {
+        url += `&code=${fieldsValue.code}`
+      }
+    }
+    if (fieldsValue.shopId) {
+      if (test(url)) {
+        url += `shopId=${fieldsValue.shopId}`
+      } else {
+        url += `&shopId=${fieldsValue.shopId}`
+      }
+    }
+    if (fieldsValue.userId) {
+      url += `&userId=${fieldsValue.userId}`
+    }
+    if (fieldsValue.warehouseId) {
+      url += `&warehouseId=${fieldsValue.warehouseId}`
+    }
+    if (fieldsValue.skuCode) {
+      url += `&skuCode=${fieldsValue.skuCode}`
+    }
+    if (fieldsValue.skuName) {
+      url += `&skuName=${fieldsValue.skuName}`
+    }
+    changeUrl(url);
+    downLoads(url).then(res=>{
+      message.loading('正在下载。。。',2.5)
+    })
+  }
   const search = async (types) => {
     const fieldsValue = await form.validateFields();
     let url = `?pay=${types}`;
@@ -271,7 +349,7 @@ export default () => {
 
           <Col className="gutter-row" span={9}>
             <div style={style}>
-              <Button type="primary" shape="">
+              <Button type="primary" shape="" onClick={reast}>
                 重置
             </Button>
             </div>
@@ -303,7 +381,7 @@ export default () => {
 
           <Col className="gutter-row" span={3}>
             <div style={style}>
-              <Button type="primary" shape="">
+              <Button type="primary" shape="" onClick={exports}>
                 导出本页
             </Button>
             </div>
@@ -311,7 +389,7 @@ export default () => {
 
           <Col className="gutter-row" span={3}>
             <div style={style}>
-              <Button type="primary" shape="">
+              <Button type="primary" shape="" onClick={exportAll}>
                 导出全部
             </Button>
             </div>

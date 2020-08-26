@@ -8,7 +8,6 @@ const FormItem = Form.Item;
 const Model = props => {
     const [form] = Form.useForm();
 
-    console.log(props)
     let title="新建部门"
     if(props.type=='2'){
         title="修改部门"
@@ -24,7 +23,6 @@ const Model = props => {
         if(props.type=='1'){
             addCompany({ method: 'POST', data: { 'name': fieldsValue.name } }).then(res => {
                 if (res.code == '200') {
-                    console.log(res.message)
                     handleAdd(res.code)
                     notification.open({
                         message: `${res.message}`,
@@ -37,7 +35,6 @@ const Model = props => {
         }else{
             changeCompany({ method: 'POST', data: { 'name': fieldsValue.name,id	:props.id } }).then(res => {
                 if (res.code == '200') {
-                    console.log(res.message)
                     handleAdd(res.code)
                     notification.open({
                         message: `${res.message}`,
@@ -49,7 +46,7 @@ const Model = props => {
             })
         }
         
-        form.resetFields();
+        // form.resetFields();
     };
     return (
         <Modal

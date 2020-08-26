@@ -1,9 +1,9 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React, { useState, useEffect, useRef } from 'react';
-import { Spin, DatePicker, Input, Row, Col, Form, Select, Button } from 'antd';
+import { Spin, DatePicker, Input, Row, Col, Form, Select, Button, message } from 'antd';
 import styles from './index.less';
 import TableBordered from '../warehouse/TableBordered';
-import { getwareList, wareDeList } from '../api'
+import { getwareList, wareDeList,downLoada } from '../api'
 import Model from './Model'
 
 const { Option } = Select
@@ -19,13 +19,11 @@ export default () => {
   const getData = (e) => {
     // console.log(e)
     getwareList({ method: 'get' }, '').then(res => {
-      console.log(res)
       if (res.code == '200') {
         changeList(res.data)
       }
     })
     wareDeList({ method: 'get' }, '').then(res => {
-      console.log(res)
       if (res.code == '200') {
         changewareType(res.data.map(item=>{
           item.key=item.id;
@@ -35,9 +33,58 @@ export default () => {
     })
     
   }
+   const reast=e=>{
+    message.loading('已重置',1)
+    form.resetFields(); 
+    getData()
+  }
+const exportThis=async()=>{
+  const fieldsValue = await form.validateFields();
+  let url = ''
+  function test(s) {
+    return s.charAt(s.length - 1) === '?';
+  }
+  if (fieldsValue.code) {
+    if (test) {
+      url += `code=${fieldsValue.code}`
+    } else {
+      url += `&code=${fieldsValue.code}`
+    }
+  }
+  if (fieldsValue.name) {
+    if (test) {
+      url += `name=${fieldsValue.name}`
+    } else {
+      url += `&name=${fieldsValue.name}`
+    }
+  }
+  if (fieldsValue.property) {
+    if (test) {
+      url += `property=${fieldsValue.property}`
+    } else {
+      url += `&property=${fieldsValue.property}`
+    }
+  }
+  if (fieldsValue.status) {
+    if (test) {
+      url += `status=${fieldsValue.status}`
+    } else {
+      url += `&status=${fieldsValue.status}`
+    }
+  }
+  downLoada(url).then(res => {
+      message.loading('导出成功',2.5)
+  })
+  
+}
+const exportAll=()=>{
+  downLoada('').then(res => {
+      message.loading('导出成功',2.5)
+  })
+}
+  // exports
 const search=async()=>{
   const fieldsValue = await form.validateFields();
-  console.log(fieldsValue)
   let url = ''
   function test(s) {
     return s.charAt(s.length - 1) === '?';
@@ -168,7 +215,7 @@ const search=async()=>{
         <Row gutter={16}>
           <Col className="gutter-row" span={20}></Col>
           <Col className="gutter-row" span={4}>
-            <Button type="primary" shape="">
+            <Button type="primary" shape="" onClick={reast}>
               重置
             </Button>
           </Col>
@@ -184,7 +231,7 @@ const search=async()=>{
           <Col className="gutter-row" span={15}></Col>
           <Col className="gutter-row" span={3}>
             <div style={style}>
-              <Button type="primary" shape="">
+              <Button type="primary" shape="" onClick={exportThis}>
                 导出本页
             </Button>
             </div>
@@ -192,7 +239,7 @@ const search=async()=>{
 
           <Col className="gutter-row" span={3}>
             <div style={style}>
-              <Button type="primary" shape="">
+              <Button type="primary" shape="" onClick={exportAll}>
                 导出全部
             </Button>
             </div>

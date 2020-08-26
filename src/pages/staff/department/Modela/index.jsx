@@ -55,7 +55,6 @@ const Model = props => {
     }
     // nowValue
     const changeAll = (e) => {
-        console.log(e.target.value)
         let data = lists.map(item => {
             if (e.target.value == item.id) {
                 item.permissions.map(res => {

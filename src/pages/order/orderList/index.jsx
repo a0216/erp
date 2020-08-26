@@ -1,41 +1,66 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React, { useState, useEffect } from 'react';
-import { Spin, DatePicker, Input, Row, Col, Form, Select, Button } from 'antd';
+import { Spin, DatePicker, Input, Row, Col, Form, Select, Button, Tabs, message } from 'antd';
 import styles from './index.less';
 import TableBordered from '../orderList/TableBordered';
-import { orderList, searchOrder, payType } from '../api'
+import { orderList, storeList, payType, jdOrder, orderLists, orderState } from '../api'
 const { RangePicker } = DatePicker;
 const { Option } = Select
 const style = {
 };
+const { TabPane } = Tabs;
+
 export default () => {
   const FormItem = Form.Item;
   const [form] = Form.useForm();
-
-
   const [loading, setLoading] = useState(true);
   const [list, changeList] = useState([]);
-  const [payTypes, changepayType] = useState([]);
+  const [stores, changeStores] = useState([]);
+  const [store, changeId] = useState('');
+  const [types, changepayType] = useState([]);
+  const [isClick, changeClick] = useState(false);
+  const [states, changeStates] = useState([]);
+  const reast = e => {
+    message.loading('已重置', 1)
+    form.resetFields();
+    getData(store)
+  }
   // orderList
-  const getData = () => {
-    orderList({ method: 'get' }).then(res => {
+  const callback = e => {
+    search(e)
+    changeId(JSON.stringify(e))
+  }
+
+  const asyncJd = e => {
+    changeClick(true)
+    changeId(JSON.stringify(e))
+    jdOrder(e).then(res => {
       if (res.code == '200') {
-        changeList(res.data)
+        changeClick(false)
+        message.success('更新成功')
+      }else{
+        setTimeout(()=>{
+        changeClick(false)
+        },3000)
       }
+      getData(e)
     })
-    payType({ method: 'GET' }).then(res => {
+  }
+  const getData = (store) => {
+    orderLists(`?store=${store}`).then(res => {
       if (res.code == '200') {
-        changepayType(res.data.map(item => {
+        changeList(res.data.map(item => {
           item.key = item.id;
-          return item
+          return item;
         }))
       }
     })
+
+
   }
-  const search = async () => {
+  const search = async (store) => {
     const fieldsValue = await form.validateFields();
-    console.log(fieldsValue)
-    let url = ''
+    let url = `?store=${store}`
     function test(s) {
       return s.charAt(s.length - 1) === '?';
     }
@@ -93,17 +118,43 @@ export default () => {
         url += `&payType=${fieldsValue.payType}`
       }
     }
-    searchOrder({ method: 'GET' }, url).then(res => {
-      if(res.code=='200'){
-        changeList(res.data)
+    orderLists(url).then(res => {
+      if (res.code == '200') {
+        changeList(res.data.map(item => {
+          item.key = item.id;
+          return item;
+        }))
       }
     })
   }
+ 
   useEffect(() => {
+    payType({ method: 'GET' }).then(res => {
+      if (res.code == '200') {
+        changepayType(res.data.map(item => {
+          item.key = item.id;
+          return item
+        }))
+      }
+    })
+    orderState().then(res => {
+      if (res.code == '200') {
+        changeStates(res.data)
+      }
+    })
+    storeList().then(res => {
+      if (res.code == '200') {
+        changeId(JSON.stringify(res.data[0].id) )
+        getData(res.data[0].id)
+        changeStores(res.data.map(item => {
+          item.key = item.id;
+          return item;
+        }))
+      }
+    })
     setTimeout(() => {
       setLoading(false);
     }, 3000);
-    getData()
   }, []);
   return (
     <PageHeaderWrapper content="" className={styles.main}>
@@ -124,8 +175,8 @@ export default () => {
           </Col>
           <Col className="gutter-row" span={5}>
             <FormItem
-              label="订单编号:"
-              name="code"
+              label="订单号:"
+              name="orderId"
             >
               <Input
                 placeholder="请输入订单编号"
@@ -162,8 +213,9 @@ export default () => {
             </FormItem>
           </Col>
           <Col className="gutter-row" span={4}>
-              <Button type="primary" shape="" onClick={search}>
-                搜索
+            {/* <Button type="primary" shape="" onClick={search}> */}
+            <Button type="primary" shape="" onClick={search}>
+              搜索
             </Button>
           </Col>
         </Row>
@@ -171,7 +223,7 @@ export default () => {
           <Col className="gutter-row" span={5}>
             <FormItem
               label="订单状态："
-              name="status"
+              name="state"
             >
               <Select
                 placeholder='请选择'
@@ -179,11 +231,10 @@ export default () => {
                   width: 180,
                 }}
               >
-                <Option value="0">未开始</Option>
-                <Option value="1">进行中</Option>
-                <Option value="2">已结束</Option>
-                <Option value="3">退货中</Option>
-                <Option value="4">退货完成</Option>
+                {states.map(res => {
+                  return <Option value={res.value}>{res.key}</Option>
+                })}
+
               </Select>
             </FormItem>
           </Col>
@@ -203,34 +254,26 @@ export default () => {
               </Select>
             </FormItem>
           </Col> */}
-          <Col className="gutter-row" span={5}>
-            <FormItem
-              label="付款方式:"
-              name="payType"
-            >
-              <Select
-                placeholder='请选择'
-                style={{
-                  width: 180,
-                }}
-              >
-                {payTypes.map(res => {
-                  return <Option value={res.id}>{res.name}</Option>
-                })}
-
-              </Select>
-            </FormItem>
-          </Col>
-          <Col className="gutter-row" span={5}>
+          <Col className="gutter-row" span={15}>
 
           </Col>
+
           <Col className="gutter-row" span={4}>
-              <Button type="primary" shape="">
-                重置
+            <Button type="primary" shape="" onClick={reast}>
+              重置
             </Button>
           </Col>
         </Row>
+        <Row gutter={0}>
+          {stores.map(item => {
+            return <Col className="gutter-row" span={4}>
+              <Button type="primary" shape="" onClick={()=>asyncJd(item.id)} disabled={isClick}>
+               同步{item.name}订单
+              </Button>
+            </Col>
+          })}
 
+        </Row>
         <Row gutter={0}>
           <Col className="gutter-row" span={18}>
           </Col>
@@ -250,6 +293,12 @@ export default () => {
             </div>
           </Col>
         </Row>
+        <Tabs activeKey={store} onChange={callback}>
+          {stores.map(item => {
+            return <TabPane tab={item.name} key={item.id} ></TabPane>
+          })}
+
+        </Tabs>
         <TableBordered
           list={list}
         />

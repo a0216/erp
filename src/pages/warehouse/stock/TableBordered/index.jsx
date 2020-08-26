@@ -9,8 +9,6 @@ const { confirm } = Modal;
 
 const handleAdd = async fields => {
   const hide = message.loading('正在添加');
-  console.log(fields)
-  //   hide();
   if (fields == '200') {
     setTimeout(() => {
       hide();

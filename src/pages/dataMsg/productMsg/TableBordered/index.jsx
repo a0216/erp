@@ -7,7 +7,6 @@ import { getProductMsg } from '../../api'
 import Model from '../Model'
 
 const TableBordered = props => {
-  console.log(props)
   const [createModalVisible, handleModalVisible] = useState(false);
   const [nowList,getList]=useState([])
   const [type, settype] = useState('1');
@@ -60,6 +59,7 @@ const actionRef = useRef(props.getData);
           dataSource={props.nowList}
           bordered
           footer={() => 'Footer'}
+          pagination={false}
         />
       </div>
       <Model

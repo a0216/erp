@@ -17,7 +17,7 @@ const codeMessage = {
   406: '请求的格式不可得。',
   410: '请求的资源被永久删除，且不会再得到的。',
   422: '当创建一个对象时，发生一个验证错误。',
-  500: '服务器发生错误，请检查服务器。',
+  500: '发生错误，请检查。',
   502: '网关错误。',
   503: '服务不可用，服务器暂时过载或维护。',
   504: '网关超时。',
@@ -59,11 +59,11 @@ const errorHandler = error => {
 const request = extend({
   errorHandler,
   prefix: 'https://erpapi.owodian.com/api',
-  timeout: 500,
+  timeout: 30000,
   headers: {
     "Authorization":`${JSON.parse(localStorage.getItem('tokenType'))} ${JSON.parse(localStorage.getItem('token'))}`,
   },
-  method:""
 
 });
+// const downLoad=
 export default request

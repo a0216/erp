@@ -105,7 +105,6 @@ class EditableTable extends React.Component {
     })
   }
   componentWillReceiveProps(props) {
-    console.log(props)
     nowList = props.productList
     this.setState({
       dataSource: nowList,
@@ -242,7 +241,6 @@ class EditableTable extends React.Component {
   };
 
   handleSave = row => {
-    console.log(row)
     if (row.num) {
       row.all = row.purchasePrice * row.num;
     }
@@ -253,7 +251,6 @@ class EditableTable extends React.Component {
     const index = newData.findIndex(item => row.key === item.key);
     const item = newData[index];
     newData.splice(index, 1, { ...item, ...row });
-    console.log(newData)
     this.props.toSend(newData)
     this.setState({
       dataSource: newData,

@@ -12,7 +12,6 @@ const { confirm } = Modal;
 
 const handleAdd = async fields => {
   const hide = message.loading('正在添加');
-  console.log(fields)
   //   hide();
   if (fields == '200') {
     setTimeout(() => {
@@ -30,7 +29,6 @@ const handleAdd = async fields => {
 };
 
 const changeThis = (e) => {
-  console.log(e)
 }
 
 
@@ -41,7 +39,6 @@ const TableBordered = props => {
   const [nowMsg, changeMsg] = useState({});
   const [type, addOrch] = useState('1');
   const changeSwitch = (e) => {
-    console.log(e)
     changeStatus({method:"POST",data:{'uid':e.id}}).then(res=>{
       console.log(res)
     })
@@ -56,7 +53,6 @@ const TableBordered = props => {
       content: '删除用户',
       onOk() {
         delUser({ method: "POST", data: { uid: e.id } }).then(res => {
-          console.log(res)
           if (res.code == '200') {
             message.success("已删除")
             props.actionRef.current()
@@ -73,7 +69,6 @@ const TableBordered = props => {
   }
  
   const showConfirm = (e) => {
-    console.log(e)
     let formData = new FormData()
     formData.append("uid", e.id)
     formData.append("password", '123123')

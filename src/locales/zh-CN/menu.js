@@ -5,6 +5,8 @@ export default {
   'menu.buy': '采购管理',
   'menu.buy.buyOrder': '采购订单',
   'menu.buy.payOrder': '付款单',
+  'menu.buy.bill': '账单信息',
+  'menu.buy.detail': '账单详情',
   'menu.warehouse': '仓库管理',
   'menu.warehouse.stock': '库存管理',
   'menu.warehouse.warehousing': '商品入库',
@@ -13,6 +15,7 @@ export default {
   'menu.warehouse.inventory': '库存盘点',
   'menu.order': '订单管理',
   'menu.order.orderList': '订单列表',
+  'menu.order.orderListb': '销售订单',
   'menu.order.sales': '销售开单',
   'menu.order.salesReturn': '销售退货',
   'menu.dataMsg': '基本资料',
@@ -69,8 +72,5 @@ export default {
   'menu.account.settings': '个人设置',
   'menu.account.trigger': '触发报错',
   'menu.account.logout': '退出登录',
-  'menu.editor': '图形编辑器',
-  'menu.editor.flow': '流程编辑器',
-  'menu.editor.mind': '脑图编辑器',
-  'menu.editor.koni': '拓扑编辑器',
+
 };

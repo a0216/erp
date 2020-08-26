@@ -8,7 +8,6 @@ const Modela = props => {
     const [shopList, changeShopList] = useState([])
     const getList = (e) => {
         shopMsgList({ method: "get" }).then(res => {
-            console.log(res)
             if (res.code == '200') {
                 let data=res.data.map(item=>{
                     item.key=item.id;
@@ -43,12 +42,10 @@ const Modela = props => {
     }
    
     const handleMsg = (e) => {
-        console.log(e)
     }
     const { modalVisible, onSubmit: handleAdd, onCancel } = props;
     const okHandle = async () => {
         const fieldsValue = await form.validateFields();
-        console.log(fieldsValue)
         let formdata = new FormData()
         formdata.append('name', fieldsValue.name);
         formdata.append('contact_phone', fieldsValue.phone);
@@ -59,7 +56,6 @@ const Modela = props => {
         formdata.append('property', fieldsValue.propertyId);
         formdata.append('bank_address', fieldsValue.bankName);
         formdata.append('bank_card', fieldsValue.bankNum);
-        console.log(fieldsValue)
         // formdata.append('area', fieldsValue.address);
         if (props.type == '1') {
             shopAdd({ method: "POST", data: formdata }).then(res => {
@@ -81,7 +77,7 @@ const Modela = props => {
             
         }
 
-        form.resetFields();
+        // form.resetFields();
     };
     return (
         <Modal

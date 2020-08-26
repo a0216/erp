@@ -41,7 +41,3 @@ export default () => {
     </PageHeaderWrapper>
   );
 };
-
-function handleChange(value) {
-  console.log(`selected ${value}`);
-}

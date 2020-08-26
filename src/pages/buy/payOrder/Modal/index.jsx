@@ -7,21 +7,21 @@ import {payPayment} from '../../api'
 const Modals = props => {
     const FormItem = Form.Item;
     const [form] = Form.useForm();
-    let title = "新建仓库"
+    let title = "付款"
     if (props.type == '2') {
-        title = "修改部门"
+        title = "付款"
         form.setFieldsValue({
             'name': props.names
         })
     } else {
-        title = "新建仓库"
+        title = "付款"
     }
 
     const { modalVisible, onSubmit: handleAdd, onCancel } = props;
     const okHandle = async () => {
         const fieldsValue = await form.validateFields();
         let d= Math.floor(fieldsValue.time._d.getTime()/1000);
-        form.resetFields();
+        // form.resetFields();
         let data={}
         data.credential=fieldsValue.code
         data.type=fieldsValue.status

@@ -122,16 +122,29 @@ class EditableTable extends React.Component {
       {
         title: '零售价',
         dataIndex: 'sale_price',
+        render: (text) => {
+          return <span>{text / 100}</span>
+        }
       },
       {
-        title: '提货价',
+        title: '销售单价',
         dataIndex: 'getPrice',
-
+        render: (text) => {
+          if (text) {
+            return <span>{text / 100}</span>
+          }
+        }
       },
 
       {
         title: '优惠',
         dataIndex: 'discount',
+        editable: true,
+        required: true,
+      },
+      {
+        title: '开单价',
+        dataIndex: 'openPrice',
         editable: true,
         required: true,
       },
@@ -143,8 +156,14 @@ class EditableTable extends React.Component {
         value: ''
       },
       {
+        title: '补差合计',
+        dataIndex: 'reduceAll',
+
+      },
+      {
         title: '合计',
         dataIndex: 'all',
+
       },
       {
         title: '单位',
@@ -175,7 +194,6 @@ class EditableTable extends React.Component {
   }
   changeSelects = e => {
     let newArr = this.state.dataSource;
-console.log(e)
 
     newArr.map(res => {
       if (res.id == e.id) {
@@ -208,25 +226,36 @@ console.log(e)
     });
   };
   handleSave = row => {
+    if (row.openPrice && row.getPrice && row.num) {
+      // console.log(row.openPrice/100- row.getPrice/100 )
+      row.reduceAll = (row.openPrice * 100 - row.getPrice) * row.num / 100;
+    }
+    if (row.openPrice) {
+      row.openPrice = Math.floor(row.openPrice * 100) / 100
+    }
     if (row.discount) {
-      row.getPrice = row.sale_price - row.discount;
+      row.discount = Math.floor(row.discount * 100) / 100
+      row.getPrice = row.sale_price - row.discount * 100;
     }
     if (row.num) {
-      row.all = row.getPrice * row.num;
+      row.all = (row.getPrice * row.num) / 100;
     }
     const newData = [...this.state.dataSource];
     const index = newData.findIndex(item => row.key === item.key);
     const item = newData[index];
     newData.splice(index, 1, { ...item, ...row });
     this.props.changeSend(newData)
- 
-    let all=0;
-    for(let i in newData){
-      if(newData[i].all){
-        all+=newData[i].all;
+
+    let all = 0;
+    let reduce = 0
+    for (let i in newData) {
+      if (newData[i].all) {
+        all += newData[i].all;
+        reduce += newData[i].reduceAll
       }
-       this.props.changePrice(all)
     }
+    this.props.changePrice(all.toFixed(2))
+    this.props.changeReduce(reduce.toFixed(2))
     this.setState({
       dataSource: newData,
       selectedRowKeys: [],

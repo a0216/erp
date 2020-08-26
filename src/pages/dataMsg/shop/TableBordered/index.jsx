@@ -31,7 +31,7 @@ const TableBordered = props => {
       key: 'category',
       render: (text, record) => (
         <span>
-          {record.status == '0' ? <a target="_blank" href={record.auth_uri}  >授权</a> : ''}
+          <a target="_blank" href={record.auth_uri}  >授权</a>
         </span>
       ),
     },

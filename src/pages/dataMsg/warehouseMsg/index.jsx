@@ -20,7 +20,6 @@ export default () => {
   const [Lists, changeList] = useState([]);
   const getData = (e) => {
     wareDeList({method:"GET"}).then(res=>{
-      console.log(res)
       if(res.code=='200'){
         changeList(res.data)
         // localStorage.setItem("wareMsg",JSON.stringify(res.data))

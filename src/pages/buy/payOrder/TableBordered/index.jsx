@@ -46,7 +46,6 @@ const TableBordered = props => {
   const [allMsg, changeAll] = useState({ 'shop': {} })
   const changeNow = (e) => {
     paymentDetail({ method: 'get' }, `?id=${e.id}`).then(res => {
-      console.log(res)
       if (res.code == '200') {
         res.data.transfer.map(item => {
           item.allPrice = item.purchase_price * item.num;
@@ -62,7 +61,7 @@ const TableBordered = props => {
         })
         changeDe(res.data.transfer)
         let payMsg=[];
-        let time = new Date(res.data.created_at)
+        let time = new Date(res.data.updated_at)
         let d = new Date(time);
         let payObj={
           type:res.data.type_name,
@@ -93,12 +92,12 @@ const TableBordered = props => {
       },
       {
         title: '基准价', dataIndex: 'skus', key: 'name',
-        render: (text) => <span>{text.cost_price}</span>,
+        render: (text) => <span>{text.cost_price/100}</span>,
 
       },
       {
         title: '零售价', dataIndex: 'skus', key: 'name',
-        render: (text) => <span>{text.get_price}</span>,
+        render: (text) => <span>{text.get_price/100}</span>,
 
       },
       {
@@ -204,18 +203,18 @@ const TableBordered = props => {
       title: '基准价',
       dataIndex: 'sku',
       render: (text) =>
-        <span>{text.cost_price}</span>,
+        <span>{text.cost_price/100}</span>,
     },
 
     {
       title: '采购价',
       dataIndex: 'purchase_price',
-      render: (text) => <span>{text}</span>,
+      render: (text) => <span>{text/100}</span>,
     },
     {
       title: '差额',
       dataIndex: 'reduce_price',
-      render: (text) => <span>{text}</span>,
+      render: (text) => <span>{text/100}</span>,
     },
     {
       title: '数量',
@@ -225,7 +224,7 @@ const TableBordered = props => {
     {
       title: '采购合计',
       dataIndex: 'allPrice',
-      render: (text) => <span>{text}</span>,
+      render: (text) => <span>{text/100}</span>,
     },
     {
       title: '接收仓库',

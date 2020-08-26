@@ -5,8 +5,8 @@ const { Option } = Select;
 
 const FormItem = Form.Item;
 const Models = props => {
-    props.product.map(res=>{
-        res.key=res.id;
+    props.product.map(res => {
+        res.key = res.id;
         return res;
     })
 
@@ -36,6 +36,9 @@ const Models = props => {
         {
             title: '基准价',
             dataIndex: 'cost_price',
+            render: (text) => {
+                return <span>{text / 100}</span>
+            }
         },
         {
             title: '备注',
@@ -48,14 +51,11 @@ const Models = props => {
 
     const onSelectChange = selectedRowKeys => {
         setselectedRowKeys(selectedRowKeys)
-        console.log(props.product)
-        console.log(selectedRowKeys)
         props.product.map(res => {
             selectedRowKeys.map(item => {
                 if (res.id == item) {
                     selecList.push(res)
                     changeNowlist(selecList)
-                       console.log(selecList)
                     //    props.changeList(selecList)
                     return selecList
                 }
@@ -70,9 +70,8 @@ const Models = props => {
     const okHandle = async () => {
         // props.changeList(nowList)
         //  console.log(selecList)
-        console.log(nowList)
-        nowList.map(res=>{
-            res.key=res.id
+        nowList.map(res => {
+            res.key = res.id
         })
         handleAdds(nowList);
         onCancel()
@@ -81,7 +80,7 @@ const Models = props => {
     return (
         <Modal
             destroyOnClose
-            title="采购"
+            title="开单"
             visible={modalVisible}
             onOk={okHandle}
             onCancel={onCancel}

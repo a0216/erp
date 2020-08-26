@@ -92,7 +92,6 @@ var nowList = []
 var upList = []
 class EditableTable extends React.Component {
   componentWillReceiveProps(props) {
-    console.log(props)
      this.setState({
       wareList: props.wareList,
     });
@@ -141,7 +140,6 @@ class EditableTable extends React.Component {
 
   constructor(props) {
     super(props);
-    console.log(props)
     this.setState({
       wareList: props.wareList,
     });
@@ -163,11 +161,22 @@ class EditableTable extends React.Component {
       {
         title: '基准价',
         dataIndex: 'cost_price',
+        render:(text)=>{
+        return <span>{text/100}</span>
+        }
         // editable: true,
       },
       {
         title: '采购价',
         dataIndex: 'purchasePrice',
+        editable: true,
+        required: true,
+        value: ''
+
+      },
+      {
+        title: '拍单价',
+        dataIndex: 'bidPrice',
         editable: true,
         required: true,
         value: ''
@@ -197,15 +206,20 @@ class EditableTable extends React.Component {
             onSelect={() => this.changeSelects(record)}
             onChange={this.onThis}
           >
-            {this.state.wareList.map(res => {
+            {this.state.wareList?this.state.wareList.map(res => {
               return <Option value={res.id} key={res.id} >{res.name}</Option>
-            })}
+            }):''}
           </Select>
         }
       },
       // editable: true,
       {
-        title: '合计',
+        title: '补差合计',
+        dataIndex: 'reduceAll',
+        // editable: true,
+      },
+      {
+        title: '采购合计',
         dataIndex: 'all',
         // editable: true,
       },
@@ -271,18 +285,20 @@ class EditableTable extends React.Component {
   };
 
   handleSave = row => {
-    console.log(row)
-    if (row.num) {
-      row.all = row.purchasePrice * row.num;
+    if (row.bidPrice&&row.purchasePrice) {
+      row.bidPrice=Math.floor(row.bidPrice*100)/100
+      row.purchasePrice=Math.floor(row.purchasePrice*100)/100
+      row.reduce = (row.bidPrice*100 -row.purchasePrice*100)/100;
     }
-    if (row.purchasePrice) {
-      row.reduce = row.purchasePrice - row.cost_price;
+    if (row.num) {
+      row.all=Math.floor(row.purchasePrice * row.num*100)/100
+      row.reduceAll=Math.floor(row.reduce * row.num*100)/100
+
     }
     const newData = [...this.state.dataSource];
     const index = newData.findIndex(item => row.key === item.key);
     const item = newData[index];
     newData.splice(index, 1, { ...item, ...row });
-    console.log(newData)
     this.props.toSend(newData)
     this.setState({
       dataSource: newData,
@@ -290,10 +306,8 @@ class EditableTable extends React.Component {
     });
   };
   onSelectChange = selectedRowKeys => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
     this.props.changeSelect(selectedRowKeys)
-
   };
   render() {
     const { dataSource } = this.state;

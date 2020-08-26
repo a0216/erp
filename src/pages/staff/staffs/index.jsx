@@ -1,6 +1,6 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React, { useState, useEffect, useRef } from 'react';
-import { Spin, DatePicker, Input, Row, Col, Form, Select, Button } from 'antd';
+import { Spin, DatePicker, message, Row, Col, Form, Select, Button } from 'antd';
 import styles from './index.less';
 import TableBordered from '../staffs/TableBordered';
 import Model from '../staffs/Model'
@@ -21,7 +21,6 @@ const FormItem = Form.Item;
   const [departList, changeList] = useState([])
 
   const handleAdd = (e) => {
-    console.log(e)
     if (e == '200') {
       return true;
     } else {
@@ -29,11 +28,9 @@ const FormItem = Form.Item;
     }
   }
   const handleChange = (e) => {
-    console.log(e)
   }
   const search=async()=>{
     const fieldsValue = await form.validateFields();
-    console.log(fieldsValue)
     let url=`/user/search?`
     if(fieldsValue.deaprt){
       if(url.indexOf('status')!=-1){
@@ -50,7 +47,6 @@ const FormItem = Form.Item;
       }
     }
     searchUser(url,{method:'GET'}).then(res=>{
-      console.log(res)
       if(res.code=='200'){
         changeUser(res.data.data)
       }
@@ -68,6 +64,11 @@ const FormItem = Form.Item;
         changeList(res.data.data)
       }
     })
+  }
+  const reast=e=>{
+    message.loading('已重置',1)
+    form.resetFields(); 
+    getData()
   }
   const actionRef = useRef(getData);
   useEffect(() => {
@@ -149,7 +150,7 @@ const FormItem = Form.Item;
           </Col>
           <Col className="gutter-row" span={3}>
             <div style={style}>
-              <Button type="primary" shape="">
+              <Button type="primary" shape="" onClick={reast}>
                 重置
             </Button>
             </div>

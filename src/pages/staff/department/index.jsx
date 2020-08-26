@@ -29,7 +29,6 @@ const handleAdd = async fields => {
     message.error('添加失败请重试！');
     return false;
   }
-  console.log(fields)
 };
 export default () => {
   const [form] = Form.useForm();

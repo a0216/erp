@@ -5,7 +5,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect, FormattedMessage, formatMessage } from 'umi';
 
 import options from './address';
-import { productList, addOrder, saleUser ,payType} from '../api'
+import { productList, addOrder, saleUser, payType, shopList } from '../api'
 
 import styles from './style.less';
 import { Cascader } from 'antd';
@@ -28,14 +28,29 @@ const AdvancedForm = ({ submitting, dispatch }) => {
   const [sendLists, changeSend] = useState([]);
   const [saleUsers, changeUser] = useState([]);
   const [payTypes, changepayType] = useState([]);
-  const [allPrice,changePrice]=useState(0)
+  const [shopLists, changeShopList] = useState([]);
+  const [allPrice, changePrice] = useState(0)
+  const [reduces, changeReduce] = useState(0)
+
 
   const [form] = Form.useForm();
   const [error, setError] = useState([]);
+
   const getData = () => {
+    shopList({ method: "GET" }, '?property=2').then(res => {
+      if (res.code == '200') {
+        changeShopList(res.data.map(item => {
+          item.key = item.id;
+          return item
+        }))
+      }
+    })
     productList({ method: 'get' }).then(res => {
       if (res.code == '200') {
-        changeList(res.data)
+        changeList(res.data.map(item => {
+          item.key = item.id;
+          return item
+        }))
       }
     })
     saleUser({ method: 'GET' }).then(res => {
@@ -57,11 +72,10 @@ const AdvancedForm = ({ submitting, dispatch }) => {
     // payType()
   }
   const handleAdds = (e) => {
-    console.log(e)
-  // const [allPrice,changePrice]=useState(0)
-  e.map(res=>{
-
-  })
+    // const [allPrice,changePrice]=useState(0)
+    e.map(res => {
+    
+    })
     sendList(e)
   }
   useEffect(() => {
@@ -70,7 +84,6 @@ const AdvancedForm = ({ submitting, dispatch }) => {
 
 
   const onFinish = fieldsValue => {
-    console.log(fieldsValue)
 
     let data = {}
     data.name = fieldsValue.name;
@@ -84,15 +97,22 @@ const AdvancedForm = ({ submitting, dispatch }) => {
     data.full_address = fieldsValue.full_address;
     data.user_id = fieldsValue.user_id;
     data.comment = fieldsValue.comment;
+    sendLists.map(res=>{
+      res.all=res.all*100;
+      res.discount=res.discount*100;
+      res.openPrice=res.openPrice*100;
+      
+      return res;
+    })
     data.skuList = sendLists;
-    data.store_id = '1';
-     
+    data.store_id = fieldsValue.store_id;
+    data.all=allPrice*100;
     addOrder({ method: 'POST', data: data }).then(res => {
-      console.log(res)
-      if(res.code=='200'){
+      if (res.code == '200') {
         message.success('请求成功')
-        location.reload([])   
-      }else{
+        // fromPairs.res
+        form.resetFields(); 
+      } else {
         message.error('请查证后再试')
 
       }
@@ -192,6 +212,20 @@ const AdvancedForm = ({ submitting, dispatch }) => {
                   </Select>
                 </Form.Item>
               </Col>
+              <Col lg={12} md={12} sm={24}>
+                <Form.Item
+                  label='销售商家'
+                  name="store_id"
+               
+                >
+                  <Select placeholder="请选择销售商家">
+                    {shopLists.map(res => {
+                      return <Option value={res.id}>{res.name}</Option>
+
+                    })}
+                  </Select>
+                </Form.Item>
+              </Col>
               {/* <Col lg={12} md={12} sm={24}>
                 <Form.Item
                   label='销售商家'
@@ -234,15 +268,18 @@ const AdvancedForm = ({ submitting, dispatch }) => {
             changeSend={changeSend}
             allPrice={allPrice}
             changePrice={changePrice}
+            reduces={reduces}
+            changeReduce={changeReduce}
           >
           </Table>
         </PageHeaderWrapper>
         {/* {getErrorInfo(error)} */}
+        <br/>
         <Row gutter={16}>
-          <Col lg={2} md={2} sm={12}>
-            <h1 style={{ 'font-weight': '600' }}>总计:{allPrice}</h1>
-          </Col>
           <Col lg={6} md={6} sm={12}>
+            <h1 style={{ 'font-weight': '600' }}><span>总计:{allPrice}</span> <span>补差总计:{reduces}</span>   </h1>
+          </Col>
+          <Col lg={4} md={4} sm={12}>
             <Form.Item
               label='付款方式'
               name="payType"
@@ -254,10 +291,10 @@ const AdvancedForm = ({ submitting, dispatch }) => {
               ]}
             >
               <Select placeholder="请选择付款方式">
-                {payTypes.map(res=>{
-                return  <Option value={res.id}>{res.name}</Option>
+                {payTypes.map(res => {
+                  return <Option value={res.id}>{res.name}</Option>
                 })}
-               
+
               </Select>
             </Form.Item>
           </Col>

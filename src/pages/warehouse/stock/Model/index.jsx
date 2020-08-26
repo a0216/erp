@@ -45,7 +45,6 @@ const Model = props => {
         changenowLists(e)
     }
     const changeWare = (e) => {
-        console.log(e)
         getData(e)
     }
     useEffect(() => {
@@ -62,10 +61,8 @@ const Model = props => {
     }, [])
     const okHandle = async () => {
         const fieldsValue = await form.validateFields();
-        form.resetFields();
+        // form.resetFields();
         // let skuList = [];
-        console.log(sendList)
-        console.log(fieldsValue)
         let data = {}
         data.send_warehouse_id = fieldsValue.wareId;
         data.accept_warehouse_id = fieldsValue.statusd;
@@ -76,7 +73,6 @@ const Model = props => {
                 onCancel()
             }
             handleAdd(res.code);
-            console.log(res);
         })
 
     };

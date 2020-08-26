@@ -10,7 +10,6 @@ import { getList } from '../../api';
 
 const handleAdd = async fields => {
   const hide = message.loading('正在添加');
-  console.log(fields)
   //   hide();
   if (fields == '200') {
     setTimeout(() => {
@@ -26,11 +25,8 @@ const handleAdd = async fields => {
   }
 
 };
-
 const changeThis = (e) => {
-  console.log(e)
 }
-
 
 const TableBordered = props => {
   const [tableList, changeList] = useState(props.tableList)

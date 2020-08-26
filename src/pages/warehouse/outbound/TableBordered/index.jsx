@@ -33,14 +33,12 @@ const TableBordered = props => {
     };
   }, []);
   const handleChange=(e)=>{
-    console.log(e)
     changeWareId(e)
   }
   const [wareId, changeWareId] = useState('1');
  
   const delConfirm = (e) => {
     let nowId=''
-    console.log(e)
     confirm({
       icon: <ExclamationCircleOutlined />,
       // content: '审核通过此项',
@@ -54,7 +52,6 @@ const TableBordered = props => {
       </Select>,
       onOk() {
         outAudit({ method: "POST", data: { id: e.id, wid: nowId } }).then(res => {
-          console.log(res)
           if (res.code == '200') {
             message.success("已审核")
             // props.actionRef.current()
@@ -98,7 +95,11 @@ const TableBordered = props => {
     },
     {
       title: '审核人',
-      dataIndex: 'address',
+      dataIndex: 'audit_user_name',
+    },
+    {
+      title: '审核时间',
+      dataIndex: 'audit_time',
     },
     {
       title: '商品编码',
@@ -116,16 +117,21 @@ const TableBordered = props => {
     {
       title: '基准价',
       dataIndex: 'cost_price',
+      render:(text)=>{
+      return <span>{text/100}</span>
+      }
     },
     {
-      title: '列表价格',
+      title: '零售价',
       dataIndex: 'get_price',
+      render:(text)=>{
+        return <span>{text/100}</span>
+        }
     },
     {
       title: '操作', render: (text, record) => (
         <span>
           {record.status == '0' ? <a onClick={() => { delConfirm(record); }}>审核</a> : ""}
-
         </span>
       ),
     },
@@ -139,8 +145,7 @@ const TableBordered = props => {
           dataSource={props.outWare}
           bordered
           scroll={{ x: 1500 }}
-          title={() => 'Header'}
-          footer={() => 'Footer'}
+      
         />
       </div>
     </div>

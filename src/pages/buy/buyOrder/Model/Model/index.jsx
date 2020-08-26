@@ -5,7 +5,6 @@ const { Option } = Select;
 
 const FormItem = Form.Item;
 const Models = props => {
-    console.log(props)
     const [form] = Form.useForm();
     const { modalVisible, product, onSubmit: handleAdds, onCancel, onCheckAllChange, onChanges } = props;
     const [nowList, changeNowlist] = useState([])
@@ -32,6 +31,9 @@ const Models = props => {
         {
             title: '基准价',
             dataIndex: 'cost_price',
+            render:(text)=>{
+                return <span>{text/100}</span>
+            }
         },
         {
             title: '备注',
@@ -49,7 +51,6 @@ const Models = props => {
                 if (res.id == item) {
                     selecList.push(res)
                     changeNowlist(selecList)
-                    //    console.log(selecList)
                     //    props.changeList(selecList)
                     return selecList
                 }
@@ -63,7 +64,6 @@ const Models = props => {
 
     const okHandle = async () => {
         // props.changeList(nowList)
-        //  console.log(selecList)
         handleAdds(nowList);
         onCancel()
     };

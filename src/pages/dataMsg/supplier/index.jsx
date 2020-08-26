@@ -1,10 +1,10 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React, { useState, useEffect, useRef } from 'react';
-import { Spin, DatePicker, Input, Row, Col, Form, Select, Button } from 'antd';
+import { Spin, message, Input, Row, Col, Form, Select, Button } from 'antd';
 import styles from './index.less';
 import TableBordered from '../supplier/TableBordered';
 import Modela from './Model'
-import { shopList, shopMsgList } from '../api'
+import { shopList, shopMsgList,downLoadShop } from '../api'
 const { Option } = Select
 
 const style = {
@@ -23,6 +23,16 @@ export default () => {
     } else {
       return false;
     }
+  }
+  const reast=e=>{
+    message.loading('已重置',1)
+    form.resetFields(); 
+    getData()
+  }
+  const exportAll=()=>{
+    downLoadShop().then(res=>{
+      message.loading('正在下载。。。',2.5)
+    })
   }
   const search = async () => {
     const fieldsValue = await form.validateFields();
@@ -54,7 +64,6 @@ export default () => {
 
     shopList({ method: "GET" }, url).then(res => {
       if (res.code == '200') {
-        console.log(res)
         changeShopList(res.data)
       }
     })
@@ -62,7 +71,6 @@ export default () => {
   }
   const getData = () => {
     shopMsgList({ method: "get" }).then(res => {
-      console.log(res)
       if (res.code == '200') {
         let data = res.data.map(item => {
           item.key = item.id;
@@ -73,7 +81,6 @@ export default () => {
     })
     shopList({ method: "GET" }, '').then(res => {
       if (res.code == '200') {
-        console.log(res)
         // localStorage.setItem('shopList',JSON.stringify(res.data))
         changeShopList(res.data)
       }
@@ -150,7 +157,7 @@ export default () => {
         <Row gutter={16}>
           <Col className="gutter-row" span={20}></Col>
           <Col className="gutter-row" span={4}>
-            <Button type="primary" shape="">
+            <Button type="primary" shape="" onClick={reast}>
               重置
             </Button>
           </Col>
@@ -165,16 +172,16 @@ export default () => {
           </Col>
           <Col className="gutter-row" span={15}></Col>
           <Col className="gutter-row" span={3}>
-            <div style={style}>
+            {/* <div style={style}>
               <Button type="primary" shape="">
                 导出本页
             </Button>
-            </div>
+            </div> */}
           </Col>
 
           <Col className="gutter-row" span={3}>
             <div style={style}>
-              <Button type="primary" shape="">
+              <Button type="primary" shape="" onClick={exportAll}>
                 导出全部
             </Button>
             </div>

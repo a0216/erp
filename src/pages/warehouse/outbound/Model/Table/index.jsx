@@ -132,6 +132,9 @@ class EditableTable extends React.Component {
       {
         title: '基准价',
         dataIndex: 'cost_price',
+        render:(text)=>{
+          return <span>{text/100}</span>
+          }
         // editable: true,
       },
     
@@ -209,18 +212,17 @@ class EditableTable extends React.Component {
   };
 
   handleSave = row => {
-    console.log(row)
-    if (row.num) {
-      row.all = row.purchasePrice * row.num;
-    }
     if (row.purchasePrice) {
-      row.reduce = row.purchasePrice - row.cost_price;
+      row.purchasePrice=Math.floor(row.purchasePrice*100)/100
+      row.reduce = (row.purchasePrice*100 -row.cost_price)/100;
+    }
+    if (row.num) {
+      row.all=Math.floor(row.purchasePrice * row.num*100)/100
     }
     const newData = [...this.state.dataSource];
     const index = newData.findIndex(item => row.key === item.key);
     const item = newData[index];
     newData.splice(index, 1, { ...item, ...row });
-    console.log(newData)
     this.props.toSend(newData)
     this.setState({
       dataSource: newData,

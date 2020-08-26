@@ -35,7 +35,6 @@ const Model = props => {
     })
     const getData = () => {
         getList({ method: "GET" },'').then(res => {
-            console.log(res)
             changeList(res.data.data)
         })
     }
@@ -54,14 +53,13 @@ const Model = props => {
         })
     }
     const roleChange = (e) => {
-        console.log(e)
     }
     useEffect(() => {
         getData();
     }, [])
     const okHandle = async () => {
         const fieldsValue = await form.validateFields();
-        form.resetFields();
+        // form.resetFields();
         handleAdd(fieldsValue);
         let formData = new FormData();
 

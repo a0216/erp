@@ -4,9 +4,11 @@ import { Spin, DatePicker, Input, Row, Col, message, Select, Button, Tabs, Form 
 import styles from './index.less';
 import TableBordered from '../buyOrder/TableBordered';
 import { shopList, wareSelects } from '../../allNeed'
-import { payment, searchUser } from '../api'
+import { payment, searchUser, downLoads } from '../api'
+
 
 import Model from '../buyOrder/Model'
+
 const { RangePicker } = DatePicker;
 const { Option } = Select
 const style = {
@@ -24,6 +26,7 @@ const handleAdd = async fields => {
 };
 const FormItem = Form.Item;
 export default () => {
+
   const [form] = Form.useForm();
 
   const [loading, setLoading] = useState(true);
@@ -31,12 +34,16 @@ export default () => {
   const [shopLists, changeshopList] = useState([]);
   const [wareList, changetWare] = useState([]);
   const [paymentList, changepayment] = useState([]);
-  const [types, changeType] = useState(' ');
+  const [types, changeType] = useState('0');
   const [userList, setuserList] = useState([]);
-
+  const reast = e => {
+    message.loading('已重置', 1)
+    form.resetFields();
+    getData(types)
+  }
 
   const getData = (types) => {
-    payment({ method: 'get' }, `?put=${types}`).then(res => {
+    payment({ method: 'get' }, `?put=${types}`).then((res) => {
       if (res.code == '200') {
         changepayment(res.data.data.map(item => {
           item.key = item.id;
@@ -45,14 +52,117 @@ export default () => {
       }
     })
   }
+
   const callback = (e) => {
-    console.log(e)
     changeType(e)
     search(e)
   }
+  const columns = [
+    {
+      title: '采购申请日期',
+      dataIndex: 'created_at',
+      render: (text) =>
+        <span>{text}</span>,
+    },
+    {
+      title: '采购单号',
+      dataIndex: 'code',
+      render: (text, record) => (
+        <span>
+          <a style={{ marginRight: 16 }} onClick={() => { openDrawer(true); changeNow(record) }}>{text}</a>
+        </span>
+      ),
+
+    },
+    {
+      title: '供应商',
+      dataIndex: 'shop',
+      render: (text) => <span>{text.name}</span>,
+    },
+    // {
+    //   title: '单据类型',
+    //   dataIndex: 'category',
+    //   render: (text) => <span>{text}</span>,
+    // },
+    {
+      title: '制单人',
+      dataIndex: 'user',
+      render: (text) => <span>{text.name}</span>,
+    },
+    {
+      title: '操作', dataIndex: 'unit', key: 'name', render: (text, record) => (
+        <span>{record.update == '1' ? <a style={{ marginRight: 16 }} onClick={() => { handleModalVisible(true); changeNowMsgs(record) }}>修改</a> : ''}
+          {/* <a style={{ marginRight: 16 }}>删除</a> */}
+          <a onClick={() => { delConfirm(record); }}>删除</a>
+        </span>
+      ),
+
+    },
+  ];
+  const exportAll = () => {
+    let url = '?all=1';
+
+    downLoads(url).then(res => {
+      message.loading('正在下载', 2.5)
+    })
+  }
+  const exportThis = async () => {
+    const fieldsValue = await form.validateFields();
+    let url = `?put=${types}`;
+    function test(s) {
+      return s.charAt(s.length - 1) === '?';
+    }
+    if (fieldsValue.times) {
+      let startTime = Math.floor(fieldsValue.times[0]._d.getTime() / 1000);
+      let endTime = Math.floor(fieldsValue.times[1]._d.getTime() / 1000);
+      if (fieldsValue.times[0]) {
+        if (test(url)) {
+          url += `startTime=${startTime}`
+        } else {
+          url += `&startTime=${startTime}`
+        }
+      }
+      if (fieldsValue.times[1]) {
+        if (test(url)) {
+          url += `endTime=${endTime}`
+        } else {
+          url += `&endTime=${endTime}`
+        }
+      }
+    }
+    if (fieldsValue.code) {
+      if (test(url)) {
+        url += `code=${fieldsValue.code}`
+      } else {
+        url += `&code=${fieldsValue.code}`
+      }
+    }
+    if (fieldsValue.shopId) {
+      if (test(url)) {
+        url += `shopId=${fieldsValue.shopId}`
+      } else {
+        url += `&shopId=${fieldsValue.shopId}`
+      }
+    }
+    if (fieldsValue.userId) {
+      url += `&userId=${fieldsValue.userId}`
+    }
+    if (fieldsValue.warehouseId) {
+      url += `&warehouseId=${fieldsValue.warehouseId}`
+    }
+    if (fieldsValue.skuCode) {
+      url += `&skuCode=${fieldsValue.skuCode}`
+    }
+    if (fieldsValue.skuName) {
+      url += `&skuName=${fieldsValue.skuName}`
+    }
+    downLoads(url).then(res => {
+      message.loading('正在下载', 2.5)
+    })
+
+  }
   const search = async (types) => {
     const fieldsValue = await form.validateFields();
-    console.log(fieldsValue)
     let url = `?put=${types}`;
     function test(s) {
       return s.charAt(s.length - 1) === '?';
@@ -117,7 +227,8 @@ export default () => {
 
   useEffect(() => {
     getData('0')
-    searchUser().then(res => {
+    let getUser = searchUser()
+    getUser.then(res => {
       if (res.code == '200') {
         setuserList(res.data.map(item => {
           item.key = item.id;
@@ -126,16 +237,9 @@ export default () => {
       }
 
     })
-    shopList({ method: 'GET' }).then(res => {
-      if (res.code == '200') {
-        res.data.map(item => {
-          item.key = item.id;
-          return item;
-        })
-        changeshopList(res.data)
-      }
-    })
-    wareSelects({ method: 'GET' }).then(res => {
+
+
+    wareSelects({ method: 'GET' }).then(function (res) {
       if (res.code == '200') {
         res.data.map(item => {
           item.key = item.id;
@@ -144,9 +248,20 @@ export default () => {
         changetWare(res.data)
       }
     })
+    shopList({ method: 'GET' }).then((res) => {
+      if(res){
+        if (res.code == '200') {
+          res.data.map(item => {
+            item.key = item.id;
+            return item;
+          })
+          changeshopList(res.data)
+        }
+      }
+    })
     setTimeout(() => {
       setLoading(false);
-    }, 3000);
+    }, 1000);
   }, []);
   return (
     <PageHeaderWrapper content="" className={styles.main}>
@@ -214,8 +329,8 @@ export default () => {
             </FormItem>
           </Col>
           <Col className="gutter-row" span={4}>
-              <Button type="primary" shape="" onClick={search}>
-                搜索
+            <Button type="primary" shape="" onClick={search}>
+              搜索
             </Button>
           </Col>
         </Row>
@@ -267,7 +382,7 @@ export default () => {
 
           <Col className="gutter-row" span={9}>
             <div style={style}>
-              <Button type="primary" shape="">
+              <Button type="primary" shape="" onClick={reast}>
                 重置
             </Button>
             </div>
@@ -275,47 +390,48 @@ export default () => {
         </Row>
         <Row gutter={0}>
           <Col className="gutter-row" span={3}>
-              <Button type="primary" shape="" onClick={() => handleModalVisible(true)}>
-                采购申请
+            <Button type="primary" shape="" onClick={() => handleModalVisible(true)}>
+              采购申请
             </Button>
-              <Model
-                onSubmit={async value => {
-                  const success = await handleAdd(value);
-                  if (success) {
-                    handleModalVisible(false);
-                    if (actionRef.current) {
-                      actionRef.current('0');
-                    }
+            <Model
+              onSubmit={async value => {
+                const success = await handleAdd(value);
+                if (success) {
+                  handleModalVisible(false);
+                  if (actionRef.current) {
+                    actionRef.current('0');
                   }
-                }}
-                onCancel={() => handleModalVisible(false)}
-                modalVisible={createModalVisible}
-                wareList={wareList}
-                type={'1'}
-              />
+                }
+              }}
+              onCancel={() => handleModalVisible(false)}
+              modalVisible={createModalVisible}
+              wareList={wareList}
+              type={'1'}
+            />
           </Col>
           <Col className="gutter-row" span={9}></Col>
           <Col className="gutter-row" span={3}>
-              <Button type="primary" shape="">
-                下载模板
+            <Button type="primary" shape="">
+              下载模板
             </Button>
           </Col>
 
           <Col className="gutter-row" span={3}>
-              <Button type="primary" shape="">
-                导入信息
+            <Button type="primary" shape="">
+              导入信息
             </Button>
           </Col>
 
           <Col className="gutter-row" span={3}>
-              <Button type="primary" shape="">
-                导出本页
+            <Button type="primary" shape="" onClick={exportThis}
+            >
+              导出本页
             </Button>
           </Col>
 
           <Col className="gutter-row" span={3}>
             <div style={style}>
-              <Button type="primary" shape="">
+              <Button type="primary" shape="" onClick={exportAll}>
                 导出全部
             </Button>
             </div>

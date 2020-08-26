@@ -4,7 +4,9 @@ export async function getProductMsg(name, data) {
     return request(`/goods/property/${name}/list`, data);
 }
 export async function shopList(data) {
-    return request('/shop/list', data);
+    let  res=await request('/shop/list', { method: 'GET' });
+    return res;
+    
 }
 export async function wareDeLists(data) {
     return request('/warehouse/property/list', data);

@@ -1,10 +1,10 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React, { useState, useEffect, useRef } from 'react';
-import { Spin, DatePicker, Input, Row, Col, Form, Select, Button } from 'antd';
+import { Spin, DatePicker, Input, Row, Col, Form, Select, Button, message } from 'antd';
 import styles from './index.less';
 import TableBordered from '../product/TableBordered';
 import Modela from './Model'
-import { getProduct,searchGood } from '../api'
+import { getProduct,searchGood,downLoadPro } from '../api'
 import { getProductMsg } from '../../allNeed'
 const { Option } = Select
 
@@ -35,10 +35,53 @@ export default () => {
       }
     })
   }
-  const search = async() => {
-    console.log(1111111111111)
+  const reast=e=>{
+    message.loading('已重置',1)
+    form.resetFields(); 
+    getData()
+  }
+  const exportThis=async()=>{
     const fieldsValue = await form.validateFields();
-    console.log(fieldsValue)
+    let data=`/goods/search?`
+    // const serialize = function(fieldsValue) {
+      // var ary = [];
+      let arr = []
+
+      for (let i in fieldsValue){
+        arr.push(fieldsValue[i]); 
+      }
+      for(let i in arr){
+        if(arr[i]){
+          // data+=
+        }
+      }
+          
+      // return ary.join('&');
+  // };
+    if(fieldsValue.code){
+      data+=`&code=${fieldsValue.code}`
+    }
+    if(fieldsValue.brandId){
+      data+=`&brandId=${fieldsValue.brandId}`
+    } 
+    if(fieldsValue.categoryId){
+      data+=`&categoryId=${fieldsValue.categoryId}`
+    }
+     if(fieldsValue.name){
+      data+=`&name=${fieldsValue.name}`
+    }
+    downLoadPro(data).then(res=>{
+     message.loading('下载中。。。',2.5)
+    })
+
+  }
+  const exportAll=()=>{
+    downLoadPro('?all=1').then(res=>{
+      message.loading('下载中。。。',2.5)
+     })
+  }
+  const search = async() => {
+    const fieldsValue = await form.validateFields();
     let data=`/goods/search?`
     // const serialize = function(fieldsValue) {
       // var ary = [];
@@ -174,7 +217,7 @@ export default () => {
         <Row gutter={16}>
           <Col className="gutter-row" span={20}></Col>
           <Col className="gutter-row" span={4}>
-            <Button type="primary" shape="">
+            <Button type="primary" shape="" onClick={reast}>
               重置
             </Button>
           </Col>
@@ -190,7 +233,7 @@ export default () => {
           <Col className="gutter-row" span={15}></Col>
           <Col className="gutter-row" span={3}>
             <div style={style}>
-              <Button type="primary" shape="">
+              <Button type="primary" shape="" onClick={exportThis}>
                 导出本页
             </Button>
             </div>
@@ -198,7 +241,7 @@ export default () => {
 
           <Col className="gutter-row" span={3}>
             <div style={style}>
-              <Button type="primary" shape="">
+              <Button type="primary" shape=""  onClick={exportAll}>
                 导出全部
             </Button>
             </div>

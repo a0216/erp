@@ -51,6 +51,10 @@ export async function delProduct(data) {
 export async function getwareList(data,e) {
     return request(`/warehouse/list?${e}`, data);
 }
+export async function exports(data,e) {
+    return request(`warehouse/export?${e}`, data);
+}
+
 export async function upWareList(data) {
     return request('/warehouse/update', data);
 }
@@ -74,7 +78,56 @@ export async function goodsUp(data) {
     return request(`/goods/update`, data);
 }
 
+export function downLoada(url){
+    return  fetch(`https://erpapi.owodian.com/api/warehouse/export${url}`,{
+        method:"get",
+        headers: {
+          "Authorization":`${JSON.parse(localStorage.getItem('tokenType'))} ${JSON.parse(localStorage.getItem('token'))}`,
+        },
+      }).then(res => res.blob()).then(blob => {
+        var a = document.createElement('a');
+        var url = window.URL.createObjectURL(blob);
+        var filename = '仓库.xls';
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    })
+}
 
+export function downLoadPro(url){
+    return  fetch(`https://erpapi.owodian.com/api/goods/export${url}`,{
+        method:"get",
+        headers: {
+          "Authorization":`${JSON.parse(localStorage.getItem('tokenType'))} ${JSON.parse(localStorage.getItem('token'))}`,
+        },
+      }).then(res => res.blob()).then(blob => {
+        var a = document.createElement('a');
+        var url = window.URL.createObjectURL(blob);
+        var filename = '商品.xls';
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    })
+}
+export function downLoadShop(url){
+    return  fetch(`https://erpapi.owodian.com/api/shop/export${url}`,{
+        method:"get",
+        headers: {
+          "Authorization":`${JSON.parse(localStorage.getItem('tokenType'))} ${JSON.parse(localStorage.getItem('token'))}`,
+        },
+      }).then(res => res.blob()).then(blob => {
+        var a = document.createElement('a');
+        var url = window.URL.createObjectURL(blob);
+        var filename = '商品.xls';
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    })
+}
+// shop/export
 
 
 

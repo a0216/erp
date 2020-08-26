@@ -25,3 +25,48 @@ export async function upApply(data) {
 export async function searchUser() {
     return request(`/warehouse/payment/listMadeUser`, {method:'get'});
 }
+
+export async function exports(data,e) {
+    return request(`/warehouse/payment/export${e}`, data);
+}
+export async function billList(e) {
+    return request(`/shop/listSupply${e}`, {method:'get'});
+}
+export async function logList(id) {
+    return request(`/shop/balance/log/list?sid=${id}`, {method:'get'});
+}
+export async function detail(id) {
+    return request(`/shop/balance/detail?id=${id}`, {method:'get'});
+}
+
+export async function payFor(data) {
+    return request(`/shop/balance/add`, {method:'post',data});
+}
+export async function paySub(data) {
+    return request(`/shop/balance/sub`, {method:'post',data});
+}
+export async function upLog(data) {
+    return request(`/shop/balance/log/update`, {method:'post',data});
+}
+
+
+
+
+export function downLoads(url){
+    return  fetch(`https://erpapi.owodian.com/api/warehouse/payment/export${url}`,{
+        method:"get",
+        headers: {
+          "Authorization":`${JSON.parse(localStorage.getItem('tokenType'))} ${JSON.parse(localStorage.getItem('token'))}`,
+        },
+      }).then(res => res.blob()).then(blob => {
+        var a = document.createElement('a');
+        var url = window.URL.createObjectURL(blob);
+        var filename = '采购单.xls';
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    })
+}
+
+  

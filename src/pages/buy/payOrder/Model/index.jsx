@@ -54,10 +54,8 @@ const Model = props => {
     }, [])
     const okHandle = async () => {
         const fieldsValue = await form.validateFields();
-        form.resetFields();
+        // form.resetFields();
         // let skuList = [];
-        console.log(sendList)
-        console.log(fieldsValue)
         let data = {}
         data.fare = fieldsValue.freight;
         data.shopId = fieldsValue.send;
@@ -68,7 +66,6 @@ const Model = props => {
                 onCancel()
             }
             handleAdd(res.code);
-            console.log(res);
         })
         // product.map(res => {
         //     onSelect.map(item => {

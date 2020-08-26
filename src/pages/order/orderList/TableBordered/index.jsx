@@ -2,23 +2,24 @@ import React from 'react';
 import { Table } from 'antd';
 import styles from './index.less';
 const TableBordered=props=>{
-console.log(props)
 
 const expandedRowRender = (record) => {
   const columns = [
     {
       title: '商品名称',
-      dataIndex: 'name',
+      dataIndex: 'sku_name',
+      ellipsis: true,
+
     },{
       title: '商品编码',
-      dataIndex: 'code',
+      dataIndex: 'sku_id',
     },
    {
       title: '数量',
-      dataIndex: 'num',
+      dataIndex: 'total',
     },{
-      title: '单位',
-      dataIndex: 'unit_name',
+      title: '京东售价',
+      dataIndex: 'jd_price',
     },
     
     // {
@@ -48,45 +49,56 @@ const columns = [
   },
   {
     title: '订单号',
-    dataIndex: 'money',
+    dataIndex: 'order_id',
   },
   {
     title: '订单状态',
-    dataIndex: 'status_name',
+    dataIndex: 'order_state_remark',
   },
   {
     title: '姓名',
-    dataIndex: 'name',
+    dataIndex: 'full_name',
+    ellipsis: true,
   },
   {
     title: '联系方式',
-    dataIndex: 'phone',
+    dataIndex: 'mobile',
+    ellipsis: true,
   },
-
   {
     title: '地址',
-    dataIndex: 'address',
-  },
-   {
-    title: '付款状态',
-    dataIndex: 'pay_name',
-    // render: (text) => {if(text=='1'){<span></span>}else if(text=='2'){<span></span>}},
-
-  }, 
-  {
-    title: '平台金额',
-    dataIndex: 'address',
+    dataIndex: 'full_address',
+    ellipsis: true,
   },
   {
-    title: '实际付款',
-    dataIndex: 'address',
+    title: '用户应付金额',
+    dataIndex: 'order_payment',
+  },
+   
+  {
+    title: '订单货款金额',
+    dataIndex: 'order_seller_price',
+  },
+   
+  {
+    title: '订单总金额',
+    dataIndex: 'order_total_price',
+  },
+  {
+    title: '订单总金额',
+    dataIndex: 'order_total_price',
+  },
+  {
+    title: '支付方式',
+    dataIndex: 'pay_type',
+  },
+  {
+    title: '订单备注',
+    dataIndex: 'order_remark',
   },{
-    title: '付款/退款日期',
-    dataIndex: 'address',
-  },{
-    title: '店铺名称',
-    dataIndex: 'store_name',
-  }
+    title: '结单时间',
+    dataIndex: 'order_end_time',
+  },
 ];
 return (
   <div >
@@ -99,7 +111,6 @@ return (
           expandedRowRender
         }}
         scroll={{ x: 1500}} 
-        title={() => 'Header'}
         footer={() => 'Footer'}
       />
     </div>

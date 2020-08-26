@@ -31,6 +31,9 @@ const Models = props => {
         {
             title: '基准价',
             dataIndex: 'cost_price',
+            render:(text)=>{
+            return <span>{text/100}</span>
+            }
         },
         {
             title: '备注',
@@ -43,13 +46,11 @@ const Models = props => {
 
     const onSelectChange = selectedRowKeys => {
         setselectedRowKeys(selectedRowKeys)
-        console.log(props)
         props.product.map(res => {
             selectedRowKeys.map(item => {
                 if (res.id == item) {
                     selecList.push(res)
                     changeNowlist(selecList)
-                    //    console.log(selecList)
                     //    props.changeList(selecList)
                     return selecList
                 }
@@ -64,7 +65,6 @@ const Models = props => {
     const okHandle = async () => {
         // props.changeList(nowList)
         //  console.log(selecList)
-        console.log(nowList)
         handleAdds(nowList);
         onCancel()
     };

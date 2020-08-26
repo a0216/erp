@@ -58,10 +58,8 @@ const Model = props => {
     }, [])
     const okHandle = async () => {
         const fieldsValue = await form.validateFields();
-        form.resetFields();
+        // form.resetFields();
         // let skuList = [];
-        console.log(sendList)
-        console.log(fieldsValue)
         let data = {}
         data.fare = fieldsValue.freight;
         data.shopId = fieldsValue.send;

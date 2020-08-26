@@ -65,10 +65,22 @@ export default defineConfig({
           component: './buy/buyOrder',
         },
         {
-          path: './buy/payOrder',
-          name: 'payOrder',
+          path: '/buy/detail/:id',
+          name: 'detail',
+          component: './buy/detail',
+          hideInMenu: true,
+        },
+        // {
+        //   path: './buy/payOrder',
+        //   name: 'payOrder',
+        //   icon: 'smile',
+        //   component: './buy/payOrder',
+        // },
+        {
+          path: './buy/bill',
+          name: 'bill',
           icon: 'smile',
-          component: './buy/payOrder',
+          component: './buy/bill',
         },
         ]
       },
@@ -122,17 +134,23 @@ export default defineConfig({
             component: './order/orderList',
           },
           {
+            path: './order/orderListb',
+            name: 'orderListb',
+            icon: 'smile',
+            component: './order/orderListb',
+          },
+          {
             path: './order/sales',
             name: 'sales',
             icon: 'smile',
             component: './order/sales',
           },
-          {
-            path: './order/salesReturn',
-            name: 'salesReturn',
-            icon: 'smile',
-            component: './order/salesReturn',
-          },
+          // {
+          //   path: './order/salesReturn',
+          //   name: 'salesReturn',
+          //   icon: 'smile',
+          //   component: './order/salesReturn',
+          // },
 
 
         ]

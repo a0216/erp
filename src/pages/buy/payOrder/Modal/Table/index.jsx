@@ -5,7 +5,6 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 
 const Tables = props => {
-    console.log(props)
     const [newArr, setnewArr] = useState([]);
     const sendData = () => {
         let arr=[]
@@ -22,7 +21,6 @@ const Tables = props => {
         // };
     }, []);
     const expandedRowRender = (record) => {
-        console.log(record)
         const columns = [
             {
                 title: '商品名称', dataIndex: 'skus', key: 'name',
@@ -39,12 +37,12 @@ const Tables = props => {
             },
             {
                 title: '基准价', dataIndex: 'skus', key: 'name',
-                render: (text) => <span>{text.cost_price}</span>,
+                render: (text) => <span>{text.cost_price/100}</span>,
 
             },
             {
                 title: '零售价', dataIndex: 'skus', key: 'name',
-                render: (text) => <span>{text.get_price}</span>,
+                render: (text) => <span>{text.get_price/100}</span>,
 
             },
             {

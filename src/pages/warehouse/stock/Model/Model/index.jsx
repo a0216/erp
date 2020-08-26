@@ -64,7 +64,6 @@ const Models = props => {
     const okHandle = async () => {
         // props.changeList(nowList)
         //  console.log(selecList)
-        console.log(nowList)
         handleAdds(nowList);
         onCancel()
     };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Modal, Select, Row, Col, Button, Typography, notification, message } from 'antd';
+import { Form, Input, Modal, Select, Row, Col, Button, Typography, InputNumber, message } from 'antd';
 import Table from './Table'
 import Models from './Model'
 import { shopList ,wareSelects} from '../../../allNeed'
@@ -55,13 +55,16 @@ const Model = props => {
     }, [])
     const okHandle = async () => {
         const fieldsValue = await form.validateFields();
-        form.resetFields();
+        // form.resetFields();
         // let skuList = [];
-        console.log(sendList)
-        console.log(fieldsValue)
         let data = {}
-        data.fare = fieldsValue.freight;
+        data.fare = fieldsValue.freight*100;
         data.shopId = fieldsValue.send;
+        sendList.map(res=>{
+            res.all=res.all*100;
+            res.reduce=res.reduce*100;
+            return res;
+        })
         data.skuList = sendList;
         toPayment({ method: 'POST', data: data }).then(res => {
             if(res.code=='200'){
@@ -69,7 +72,6 @@ const Model = props => {
                 onCancel()
             }
             handleAdd(res.code);
-            console.log(res);
         })
         product.map(res => {
             onSelect.map(item => {
@@ -128,11 +130,19 @@ const Model = props => {
                                 },
                             ]}
                         >
-                            <Input placeholder="请输入运费"
+                                <InputNumber 
+                                defaultValue={0}
+                                // formatter={value => `￥ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g,)}
+                                min={0} step={0.01}
                                 style={{
                                     width: 200,
                                 }}
                             />
+                            {/* <Input placeholder="请输入运费"
+                                style={{
+                                    width: 200,
+                                }}
+                            /> */}
                         </FormItem>
                     </Col>
                     <Col lg={24} md={24} sm={24}>

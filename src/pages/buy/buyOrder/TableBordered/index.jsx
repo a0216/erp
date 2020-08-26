@@ -67,9 +67,7 @@ const TableBordered = props => {
       icon: <ExclamationCircleOutlined />,
       content: '删除订单',
       onOk() {
-        console.log(e)
         delPayment({ method: "POST", data: { id: e.id } }).then(res => {
-          console.log(res)
           if (res.code == '200') {
             message.success("已删除")
             props.actionRef.current()
@@ -100,12 +98,12 @@ const TableBordered = props => {
       },
       {
         title: '基准价', dataIndex: 'skus', key: 'name',
-        render: (text) => <span>{text.cost_price}</span>,
+        render: (text) => <span>{text.cost_price / 100}</span>,
 
       },
       {
         title: '零售价', dataIndex: 'skus', key: 'name',
-        render: (text) => <span>{text.get_price}</span>,
+        render: (text) => <span>{text.get_price / 100}</span>,
 
       },
       {
@@ -134,22 +132,22 @@ const TableBordered = props => {
 
   const changeNowMsgs = (e) => {
     changeNowMsg(e)
-    console.log(e)
   }
   const changeNow = (e) => {
     paymentDetail({ method: 'get' }, `?id=${e.id}`).then(res => {
-      console.log(res)
       if (res.code == '200') {
         res.data.transfer.map(item => {
           item.allPrice = item.purchase_price * item.num;
+          item.reduceAll = item.sub_price * item.num;
+
           item.key = item.id;
           return item
         })
         res.data.log.map(item => {
           item.key = item.id;
-          let time = new Date(item.created_at)
+          let time = new Date(item.updated_at)
           let d = new Date(time);
-          item.created_at = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+          item.updated_at = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
           return item;
         })
         changeDe(res.data.transfer)
@@ -198,7 +196,6 @@ const TableBordered = props => {
       dataIndex: 'sku',
       render: (text) =>
         <span>{text.name}</span>,
-
     },
     {
       title: '品牌',
@@ -222,19 +219,25 @@ const TableBordered = props => {
       title: '基准价',
       dataIndex: 'sku',
       render: (text) =>
-        <span>{text.cost_price}</span>,
+        <span>{text.cost_price / 100}</span>,
     },
 
     {
       title: '采购价',
       dataIndex: 'purchase_price',
-      render: (text) => <span>{text}</span>,
+      render: (text) => <span>{text / 100}</span>,
+    },
+    {
+      title: '拍单价',
+      dataIndex: 'bid_price',
+      render: (text) => <span>{text / 100}</span>,
     },
     {
       title: '差额',
       dataIndex: 'reduce_price',
       render: (text) => <span>{text}</span>,
     },
+
     {
       title: '数量',
       dataIndex: 'num',
@@ -244,6 +247,11 @@ const TableBordered = props => {
       title: '采购合计',
       dataIndex: 'allPrice',
       render: (text) => <span>{text}</span>,
+    },
+    {
+      title: '补差合计',
+      dataIndex: 'reduceAll',
+      render: (text) => <span>{text / 100}</span>,
     },
     {
       title: '接收仓库',
@@ -303,8 +311,8 @@ const TableBordered = props => {
     },
     {
       title: '操作', dataIndex: 'unit', key: 'name', render: (text, record) => (
-        <span>{record.update=='1'?<a style={{ marginRight: 16 }} onClick={() => { handleModalVisible(true); changeNowMsgs(record) }}>修改</a>:''}
-          
+        <span>{record.update == '1' ? <a style={{ marginRight: 16 }} onClick={() => { handleModalVisible(true); changeNowMsgs(record) }}>修改</a> : ''}
+
           {/* <a style={{ marginRight: 16 }}>删除</a> */}
           <a onClick={() => { delConfirm(record); }}>删除</a>
         </span>
@@ -325,7 +333,11 @@ const TableBordered = props => {
           visible={drawerVisible}
         >
           <h2 >{allMsg.shop.name}</h2>
-          <h2>总计：{allMsg.sum_purchase_price}<span style={{ float: 'right' }}>运费：{allMsg.fare}</span></h2>
+          <h2>
+            <span>采购总计：{allMsg.sum_purchase_price/100}元 </span>
+            <span>补差总计：{allMsg.sum_sub_price/100}元</span>
+            <span style={{ float: 'right' }}>运费：{allMsg.fare}</span>
+          </h2>
           <Table
             columns={drawColumns}
             dataSource={detail}

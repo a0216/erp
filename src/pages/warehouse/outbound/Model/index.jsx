@@ -45,7 +45,6 @@ const Model = props => {
         changenowLists(e)
     }
     const changeWare = (e) => {
-        console.log(e)
         getData(e)
     }
     useEffect(() => {
@@ -62,21 +61,24 @@ const Model = props => {
     }, [])
     const okHandle = async () => {
         const fieldsValue = await form.validateFields();
-        form.resetFields();
+        // form.resetFields();
         // let skuList = [];
-        console.log(sendList)
-        console.log(fieldsValue)
         let data = {}
         data.warehouseId = fieldsValue.wareId;
         data.type = fieldsValue.statusd;
+        sendList.map(res=>{
+            res.all=res.all*100;
+            res.reduce=res.reduce*100;
+            return res;
+        })
         data.skuList = sendList;
+
         outWare({ method: 'POST', data: data }).then(res => {
             if(res.code=='200'){
                 message.success('请求成功')
                 onCancel()
             }
             handleAdd(res.code);
-            console.log(res);
         })
 
     };
@@ -84,7 +86,7 @@ const Model = props => {
     return (
         <Modal
             destroyOnClose
-            title="采购"
+            title="出库"
             visible={modalVisible}
             onOk={okHandle}
             onCancel={onCancel}

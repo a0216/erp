@@ -21,7 +21,6 @@ const TableBordered = props => {
       content: '删除商家',
       onOk() {
         delShop({ method: "POST", data: { id: e.id } }).then(res => {
-          console.log(res)
           if (res.code == '200') {
             message.success("已删除")
             props.actionRef.current()
@@ -99,6 +98,7 @@ const TableBordered = props => {
           bordered
           title={() => 'Header'}
           footer={() => 'Footer'}
+          pagination={false}
         />
       </div>
       <Modela

@@ -79,6 +79,12 @@ const Modela = props => {
         data.brand_id = fieldsValue.brand_id;
         data.category_id = fieldsValue.category_id;
         data.comment = fieldsValue.comment;
+        addList.map(res=>{
+            res.cost_price=res.cost_price*100;
+            res.get_price=res.get_price*100;
+            res.sale_price=res.sale_price*100;
+            return res;
+        })
         data.skuList = addList;
         if (props.type == '1') {
             addProduct({ method: 'POST', data: data }).then(res => {
@@ -97,7 +103,7 @@ const Modela = props => {
             })
 
         }
-        form.resetFields();
+        // form.resetFields();
         pushList([])
     };
     return (

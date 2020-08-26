@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Modal, Select, Row, Col, Button, Typography, notification, message } from 'antd';
+import { Form, Input, Modal, Select, Row, Col, Button, Typography, notification, message, InputNumber } from 'antd';
 import Table from './Table'
 import Models from './Model'
 import { shopList, wareSelects } from '../../../allNeed'
@@ -9,7 +9,6 @@ import { productList, sendPay, upApply } from '../../api'
 
 const FormItem = Form.Item;
 const Model = props => {
-    console.log(props)
     const [form] = Form.useForm();
     const { modalVisible, onSubmit: handleAdd, onCancel, onCheckAllChange, onChanges } = props;
     // cancelButtonProps={{ disabled: true }}
@@ -21,27 +20,43 @@ const Model = props => {
     const [nowLists, changenowLists] = useState([])
     const [wareList, changeWareList] = useState([])
     const [upList, changeUplist] = useState([])
-  
+
     const getData = () => {
-        productList({ method: 'get' }).then(res => {
-            if (res.code == '200') {
-                changeList(res.data.map(item=>{
-                    item.key=item.id;
-                    return item;
-                }))
+        productList({ method: 'get' }).then((res)=>{
+            if(res){
+                if (res.code == '200') {
+                    changeList(res.data.map(item => {
+                        item.key = item.id;
+                        return item;
+                    }))
+                }
             }
+         
         })
+      
     }
     const handleAdds = (e) => {
         changenowLists(e)
     }
+    useEffect(() => {
+        shopList({ method: 'GET' }).then((res) => {
+            if (res.code == '200') {
+                res.data.map(item => {
+                    item.key = item.id;
+                    return item;
+                })
+                changeshopList(res.data)
+            }
+        })
+        getData();
+
+    }, [])
     useEffect(() => {
         if (props.type == '2') {
             if (props.nowMsg.shop) {
                 form.setFieldsValue({
                     'freight': props.nowMsg.fare,
                     'send': props.nowMsg.shop.id,
-
                 })
             }
             if (props.nowMsg.transfer) {
@@ -51,29 +66,21 @@ const Model = props => {
                 })
                 changeUplist(props.nowMsg.transfer)
             }
-
         }
-        shopList({ method: 'GET' }).then(res => {
-            if (res.code == '200') {
-                res.data.map(item => {
-                    item.key = item.id;
-                    return item;
-                })
-                changeshopList(res.data)
-            }
-        })
-        // getWare()
-        getData();
-
     }, [props.nowMsg])
     const okHandle = async () => {
         const fieldsValue = await form.validateFields();
-        console.log(sendList)
-        console.log(fieldsValue)
         let data = {}
-        data.fare = fieldsValue.freight;
+        data.fare = fieldsValue.freight * 100;
         data.shopId = fieldsValue.send;
+        sendList.map(res=>{
+            res.all=res.all*100;
+            res.reduce=res.reduce*100;
+            res.bidPrice=res.bidPrice*100;
+            return res
+        })
         data.skuList = sendList;
+
         // upApply
         if (props.type == '2') {
             data.id = props.nowMsg.id;
@@ -83,7 +90,7 @@ const Model = props => {
                     onCancel()
                 }
                 handleAdd(res.code);
-                form.resetFields();
+                // form.resetFields();
 
             })
         } else {
@@ -93,7 +100,7 @@ const Model = props => {
                     onCancel()
                 }
                 handleAdd(res.code);
-                form.resetFields();
+                // form.resetFields();
 
             })
         }
@@ -139,6 +146,7 @@ const Model = props => {
                         <FormItem
                             label="运费:"
                             name="freight"
+
                             rules={[
                                 {
                                     required: true,
@@ -146,7 +154,10 @@ const Model = props => {
                                 },
                             ]}
                         >
-                            <Input placeholder="请输入运费"
+                            <InputNumber
+                                defaultValue={0}
+                                // formatter={value => `￥ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g,)}
+                                min={0} step={0.01}
                                 style={{
                                     width: 200,
                                 }}

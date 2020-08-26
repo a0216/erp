@@ -18,10 +18,8 @@ const FormItem = Form.Item;
         title = "新建仓库"
     }
     const handleChange =(e)=>{
-        console.log(e)
     }
     const handleMsg =(e)=>{
-        console.log(e)
     }
     const { modalVisible, onSubmit: handleAdd, onCancel } = props;
     const okHandle = async () => {
@@ -48,7 +46,7 @@ const FormItem = Form.Item;
 
         }
 
-        form.resetFields();
+        // form.resetFields();
     };
     return (
         <Modal

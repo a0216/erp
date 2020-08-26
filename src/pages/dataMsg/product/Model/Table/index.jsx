@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
-import { Table, Input, Button, Popconfirm, Form } from 'antd';
+import { Table, Input, Button, Popconfirm, Form,InputNumber } from 'antd';
 import './index.less'
 const EditableContext = React.createContext();
 
@@ -108,15 +108,29 @@ class EditableTable extends React.Component {
         title: '基准价',
         dataIndex: 'cost_price',
         editable: true,
+        render:(text)=>{
+          return <InputNumber min={0} step={0.01} value={text}/>
+        }
       },
       {
         title: '零售价',
         dataIndex: 'get_price',
         editable: true,
+        render:(text)=>{
+          return <InputNumber min={0} step={0.01} value={text}/>
+        }
       },
       {
         title: '促销价',
         dataIndex: 'sale_price',
+        editable: true,
+        render:(text)=>{
+          return <InputNumber min={0} step={0.01} value={text}/>
+        }
+      },
+      {
+        title: '京东skuid',
+        dataIndex: 'jd_sku_id',
         editable: true,
       },
       {
@@ -150,11 +164,7 @@ class EditableTable extends React.Component {
         change: props.changeList
       };
     }
-
-
-
   }
-
   handleDelete = key => {
     const dataSource = [...this.state.dataSource];
     this.setState({

@@ -28,7 +28,6 @@ const TableBordered = props => {
       content: '删除用户',
       onOk() {
         delWare({ method: "POST", data: { uid: e.id } }).then(res => {
-          console.log(res)
           if (res.code == '200') {
             message.success("已删除")
             props.actionRef.current()
@@ -77,6 +76,7 @@ const TableBordered = props => {
           bordered
           title={() => '仓库属性'}
           footer={() => 'Footer'}
+          pagination={false}
         />
       </div>
       <Model

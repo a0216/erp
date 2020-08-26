@@ -8,13 +8,11 @@ import { audit } from '../../api'
 const FormItem = Form.Item;
 const TableBordered = props => {
   const [form] = Form.useForm();
-  console.log(props)
 
   props.paymentList.map(res => {
     res.key = res.id;
     let time = new Date(res.created_at)
     let d = new Date(time);
-    // res.time="11111111111"
     res.created_at = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
     return res;
   })
@@ -23,7 +21,6 @@ const TableBordered = props => {
   const [nowMsg, changeMsg] = useState();
   const examine = (e) => {
     changeMsg(e)
-    console.log(e)
     handleModalVisible(true)
   }
   const handleAdd = (e) => {
@@ -52,21 +49,28 @@ const TableBordered = props => {
       },
       {
         title: '基准价', dataIndex: 'skus', key: 'name',
-        render: (text) => <span>{text.cost_price}</span>,
+        render: (text) => <span>{text.cost_price/100}</span>,
 
       },
       {
         title: '零售价', dataIndex: 'skus', key: 'name',
-        render: (text) => <span>{text.get_price}</span>,
+        render: (text) => <span>{text.get_price/100}</span>,
       },
       {
         title: '商品数量', dataIndex: 'num', key: 'name',
       },
       {
-        title: '审核人', dataIndex: 'audit_user', key: 'audit_user',
-        render: (text) => <span>{text.name}</span>,
-
+        title: '审核人', dataIndex: 'audit_user',key: 'audit_user',
+        render: (text) => {
+          if(text){
+           return <span>{text.name}</span>
+          }else{
+            ''
+          }
+         
+        },
       },
+      { title: '审核时间', dataIndex: 'audit_time', key: 'audit_time' },
       { title: '已入库数量', dataIndex: 'put_num', key: 'name' },
       {
         title: '单位', dataIndex: 'skus', key: 'name',
@@ -86,7 +90,7 @@ const TableBordered = props => {
       res.key = res.id
       return res
     })
-    return <Table columns={columns} dataSource={data} pagination={false} key={data.id} />;
+    return <Table columns={columns} dataSource={data} pagination={false}  />;
   };
   useEffect(() => {
 
@@ -98,7 +102,7 @@ const TableBordered = props => {
   }
   const okHandle = async () => {
     const fieldsValue = await form.validateFields();
-    form.resetFields();
+    // form.resetFields();
     let data = {
       id: nowMsg.id,
       num: fieldsValue.num

@@ -21,7 +21,6 @@ const Model = props => {
         const fieldsValue = await form.validateFields();
         if (props.type == '1') {
             addWares({ method: "POST", data: { name: fieldsValue.name, comment: fieldsValue.comment } }).then(res => {
-                console.log(res)
                 if (res.code == '200') {
                     message.success("新建成功");
                     onCancel();
@@ -33,7 +32,6 @@ const Model = props => {
             })
         } else {
             changeWare({ method: "POST", data: { name: fieldsValue.name, comment: fieldsValue.comment, id: props.thisMsg.id } }).then(res => {
-                console.log(res)
                 if (res.code == '200') {
                     message.success("修改成功");
                     onCancel();
@@ -44,7 +42,7 @@ const Model = props => {
                 }
             })
         }
-        form.resetFields();
+        // form.resetFields();
     };
     return (
         <Modal
