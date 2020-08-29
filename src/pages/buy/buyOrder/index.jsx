@@ -263,7 +263,7 @@ export default () => {
     })
     setTimeout(() => {
       setLoading(false);
-    }, 1000);
+    }, 500);
   }, []);
   return (
     <PageHeaderWrapper content="" className={styles.main}>

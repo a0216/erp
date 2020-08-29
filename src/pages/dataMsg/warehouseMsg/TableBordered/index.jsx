@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { Table } from 'antd';
+import { Table,Modal,message  } from 'antd';
 import styles from './index.less';
 import Model from '../Model'
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+const { confirm } = Modal;
+
 
 import {delWare} from '../../api'
 const TableBordered = props => {
@@ -23,11 +26,11 @@ const TableBordered = props => {
   })
   const delConfirm = (e) => {
     confirm({
-      title: '你确定要删除此用户吗?',
+      title: '你确定要删除此属性吗?',
       icon: <ExclamationCircleOutlined />,
-      content: '删除用户',
+      content: '删除属性',
       onOk() {
-        delWare({ method: "POST", data: { uid: e.id } }).then(res => {
+        delWare({ method: "POST", data: { id: e.id } }).then(res => {
           if (res.code == '200') {
             message.success("已删除")
             props.actionRef.current()

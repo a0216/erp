@@ -16,6 +16,7 @@ export default () => {
   const [nowList, getList] = useState([])
   const [loading, setLoading] = useState(true);
   const [nowName, changeName] = useState('brand');
+  // const [nowType, changenowType] = useState('brand');
   const getData = (e) => {
     getProductMsg(e, { method: 'GET' }).then(res => {
       if (res.code == '200') {
@@ -37,7 +38,7 @@ export default () => {
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 3000);
+    }, 500);
     getData('brand')
   }, []);
 
@@ -75,6 +76,7 @@ export default () => {
           <TableBordered
             nowName={nowName}
             getData={getData}
+            actionRef={actionRef}
             nowList={nowList}
           />
         </Col>

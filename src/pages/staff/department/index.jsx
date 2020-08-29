@@ -64,7 +64,7 @@ export default () => {
     getData();
     setTimeout(() => {
       setLoading(false);
-    }, 1000);
+    }, 500);
 
   }, []);
   return (

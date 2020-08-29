@@ -127,11 +127,11 @@ class EditableTable extends React.Component {
           return <InputNumber min={0} step={0.01} value={text}/>
         }
       },
-      {
-        title: '京东skuid',
-        dataIndex: 'jd_sku_id',
-        editable: true,
-      },
+      // {
+      //   title: '京东skuid',
+      //   dataIndex: 'jd_sku_id',
+      //   editable: true,
+      // },
       {
         title: '备注',
         dataIndex: 'comment',

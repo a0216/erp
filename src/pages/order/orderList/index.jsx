@@ -190,7 +190,7 @@ export default () => {
     })
     setTimeout(() => {
       setLoading(false);
-    }, 3000);
+    }, 500);
   }, []);
   return (
     <PageHeaderWrapper content="" className={styles.main}>

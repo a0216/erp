@@ -5,7 +5,8 @@ import styles from './index.less';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import Modela from '../Model'
 const { confirm } = Modal;
-import {goodsDel} from '../../api'
+import Modelb from './Model'
+import { goodsDel, getJd, getTb } from '../../api'
 
 const handleAdd = async fields => {
   const hide = message.loading('正在添加');
@@ -28,23 +29,25 @@ const handleAdd = async fields => {
 
 
 const TableBordered = props => {
+  const [nowMsg, changenowMsg] = useState('');
   props.list.map(res => {
     res.key = res.id;
     return res;
   })
+
   const delConfirm = (e) => {
     confirm({
       title: '你确定要删除此商品吗?',
       icon: <ExclamationCircleOutlined />,
       content: '删除商品',
       onOk() {
-        let data={}
-        data.id=e;
-        goodsDel({ method: "POST", data}).then(res => {
+        let data = {}
+        data.id = e;
+        goodsDel({ method: "POST", data }).then(res => {
           if (res.code == '200') {
             message.success("已删除")
             props.actionRef.current()
-  
+
           } else {
             message.error("删除失败")
           }
@@ -58,9 +61,31 @@ const TableBordered = props => {
   localStorage.setItem('productList', JSON.stringify(props.list))
   const [tableList, changeList] = useState(props.list)
   const [createModalVisible, handleModalVisible] = useState(false);
+  const [createModalVisibleb, handleModalVisibleb] = useState(false);
   const [nowId, changeId] = useState();
+  const [skuId, changeSku] = useState();
   const [names, changeName] = useState();
   const [type, addOrch] = useState('1');
+  const getThis = (e, ids) => {
+    changeId(e)
+    changeSku(ids)
+    if (e == '1') {
+      getJd(ids.id).then(res => {
+        if (res.code == '200') {
+          changenowMsg(res.data)
+          handleModalVisibleb(true);
+
+        }
+      })
+    } else {
+      getTb(ids.id).then(res => {
+        if (res.code == '200') {
+          changenowMsg(res.data)
+          handleModalVisibleb(true);
+        }
+      })
+    }
+  }
   const expandedRowRender = (record) => {
     const columns = [
       { title: '商品名称', dataIndex: 'name', key: 'name' },
@@ -78,6 +103,17 @@ const TableBordered = props => {
         render: (text) => {
           return <span>{text / 100}</span>
         }
+      },
+      {
+        title: '操作',
+        key: 'category',
+        render: (text, record) => (
+          <span>
+            <a style={{ marginRight: 16 }} onClick={() => { getThis('1', record) }}>绑定京东商品</a>
+            {/* <a style={{ marginRight: 16 }}>删除</a> */}
+            <a onClick={() => { getThis('2', record) }}>绑定淘宝商品</a>
+          </span>
+        ),
       },
 
     ];
@@ -153,6 +189,21 @@ const TableBordered = props => {
           modalVisible={createModalVisible}
           type={'2'}
         />
+        <Modelb
+          onSubmit={async value => {
+            // const success = await handleAdd(value);
+            // if (success) {
+            // handleModalVisible(false);
+            // props.actionRef.current();
+            // }
+          }}
+          skuId={skuId}
+          nowId={nowId}
+          nowMsg={nowMsg}
+          onCancel={() => { handleModalVisibleb(false); }}
+          modalVisible={createModalVisibleb}
+        />
+
       </div>
     </div>
   );

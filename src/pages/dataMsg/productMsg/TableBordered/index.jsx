@@ -1,9 +1,11 @@
 import React, { useState, useEffect,useRef } from 'react';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
-import { Table, Button } from 'antd';
+import { Table, Button,Modal,message } from 'antd';
 import styles from './index.less';
+const { confirm } = Modal;
 
-import { getProductMsg } from '../../api'
+import { getProductMsg,delProductMsg } from '../../api'
 import Model from '../Model'
 
 const TableBordered = props => {
@@ -20,7 +22,29 @@ const TableBordered = props => {
   }
 
 const actionRef = useRef(props.getData);
+const delConfirm = (e) => {
+  confirm({
+    title: '你确定要删除此属性吗?',
+    icon: <ExclamationCircleOutlined />,
+    content: '删除属性',
+    onOk() {
+      let data = {}
+      data.id = e.id;
+      delProductMsg(props.nowName,{ method: "POST", data }).then(res => {
+        if (res.code == '200') {
+          message.success("已删除")
+          props.actionRef.current(props.nowName)
 
+        } else {
+          message.error("删除失败")
+        }
+      })
+    },
+    onCancel() {
+      message.error("已取消")
+    },
+  });
+}
  useEffect(() => {
   // getData()
  }, []);

@@ -91,7 +91,7 @@ export default () => {
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 3000);
+    }, 500);
     getData()
   }, []);
   return (

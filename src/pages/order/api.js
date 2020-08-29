@@ -29,6 +29,10 @@ export async function payOrder(data) {
 export async function jdOrder(store) {
     return request(`/jd/order/sync?store=${store}`, {method:'get'});
 }
+export async function getWare(store) {
+    return request(`/warehouse/list`, {method:'get'});
+}
+
 export async function orderLists(send) {
     return request(`/jd/order/list${send}`, {method:'get'});
 }

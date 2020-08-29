@@ -34,6 +34,9 @@ export async function shopChange(data) {
 export async function addProductMsg(name,data) {
     return request(`/goods/property/${name}/add`, data);
 }
+export async function delProductMsg(name,data) {
+    return request(`/goods/property/${name}/del`, data);
+}
 export async function getProductMsg(name,data) {
     return request(`/goods/property/${name}/list`, data);
 }
@@ -73,7 +76,19 @@ export async function searchGood(data,e) {
 export async function upGoods(name,data) {
     return request(`/goods/property/${name}/update`, data);
 }
-
+export async function addJd(data) {
+    return request(`/goods/jdSku/add`, data);
+}
+export async function addTb(data) {
+    return request(`/goods/tbSku/add`, data);
+}
+export async function getJd(skuId) {
+    return request(`/goods/jdSku/get?skuId=${skuId}`,  {method:'get'});
+}
+export async function getTb(skuId) {
+    return request(`/goods/tbSku/get?skuId=${skuId}`, {method:'get'});
+}
+// /goods/tbSku/add
 export async function goodsUp(data) {
     return request(`/goods/update`, data);
 }
@@ -136,4 +151,6 @@ export function downLoadShop(url){
 
 
 
+
+// /warehouse/property/del
 
