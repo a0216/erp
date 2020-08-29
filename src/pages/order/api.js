@@ -49,4 +49,35 @@ export async function shipping(data) {
     return request(`/jd/order/shipping`,  data);
 }
 
-
+export function downLoads(url){
+    return  fetch(`https://erpapi.owodian.com/api/jd/order/export${url}`,{
+        method:"get",
+        headers: {
+          "Authorization":`${JSON.parse(localStorage.getItem('tokenType'))} ${JSON.parse(localStorage.getItem('token'))}`,
+        },
+      }).then(res => res.blob()).then(blob => {
+        var a = document.createElement('a');
+        var url = window.URL.createObjectURL(blob);
+        var filename = '订单.xls';
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    })
+}
+export function downLoadOrder(url){
+    return  fetch(`https://erpapi.owodian.com/api/order/export${url}`,{
+        method:"get",
+        headers: {
+          "Authorization":`${JSON.parse(localStorage.getItem('tokenType'))} ${JSON.parse(localStorage.getItem('token'))}`,
+        },
+      }).then(res => res.blob()).then(blob => {
+        var a = document.createElement('a');
+        var url = window.URL.createObjectURL(blob);
+        var filename = '销售订单.xls';
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    })
+}

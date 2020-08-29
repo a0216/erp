@@ -27,13 +27,13 @@ const TableBordered = props => {
       },
       {
         title: '销售单价',
-        dataIndex: 'all_price',
+        dataIndex: 'sale_price',
         render: (text) => {
           return <span>{text / 100}</span>
         }
       },  {
         title: '开单价',
-        dataIndex: 'all_price',
+        dataIndex: 'open_price',
         render: (text) => {
           return <span>{text / 100}</span>
         }
@@ -64,7 +64,7 @@ const TableBordered = props => {
     },
     {
       title: '订单号',
-      dataIndex: 'money',
+      dataIndex: 'code',
     },
     {
       title: '订单状态',
@@ -94,14 +94,14 @@ const TableBordered = props => {
     }, 
      {
       title: '补差合计',
-      dataIndex: 'all_price',
+      dataIndex: 'all_sub_price',
       render: (text) => {
         return <span>{text / 100}</span>
       }
     },
     {
       title: '开单价',
-      dataIndex: 'all_price',
+      dataIndex: 'all_open_price',
       render: (text) => {
         return <span>{text / 100}</span>
       }

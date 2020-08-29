@@ -3,7 +3,7 @@ import React, { useState, useEffect ,useRef} from 'react';
 import { Spin, DatePicker, Input, Row, Col, Form, Select, Button ,message} from 'antd';
 import styles from './index.less';
 import TableBordered from '../orderListb/TableBordered';
-import { orderList, searchOrder, payType } from '../api'
+import { orderList, searchOrder, payType ,downLoadOrder} from '../api'
 const { RangePicker } = DatePicker;
 const { Option } = Select
 const style = {
@@ -40,6 +40,75 @@ export default () => {
     form.resetFields(); 
     getData()
   }
+  const exportThis = async (e) => {
+    let url = ''
+    if(e==1){
+     url = '?all=1'
+    }
+    const fieldsValue = await form.validateFields();
+    function test(s) {
+      return s.charAt(s.length - 1) === '?';
+    }
+    if (fieldsValue.date) {
+      let startTime = Math.floor(fieldsValue.date[0]._d.getTime() / 1000);
+      let endTime = Math.floor(fieldsValue.date[1]._d.getTime() / 1000);
+      if (fieldsValue.date[0]) {
+        if (test(url)) {
+          url += `startTime=${startTime}`
+        } else {
+          url += `&startTime=${startTime}`
+        }
+      }
+      if (fieldsValue.date[1]) {
+        if (test(url)) {
+          url += `endTime=${endTime}`
+        } else {
+          url += `&endTime=${endTime}`
+        }
+      }
+    }
+
+    if (fieldsValue.code) {
+      if (test(url)) {
+        url += `code=${fieldsValue.code}`
+      } else {
+        url += `&code=${fieldsValue.code}`
+      }
+    }
+    if (fieldsValue.name) {
+      if (test(url)) {
+        url += `name=${fieldsValue.name}`
+      } else {
+        url += `&name=${fieldsValue.name}`
+      }
+    }
+    if (fieldsValue.phone) {
+      if (test(url)) {
+        url += `phone=${fieldsValue.phone}`
+      } else {
+        url += `&phone=${fieldsValue.phone}`
+      }
+    }
+    if (fieldsValue.status) {
+      if (test(url)) {
+        url += `status=${fieldsValue.status}`
+      } else {
+        url += `&status=${fieldsValue.status}`
+      }
+    }
+    if (fieldsValue.payType) {
+      if (test(url)) {
+        url += `payType=${fieldsValue.payType}`
+      } else {
+        url += `&payType=${fieldsValue.payType}`
+      }
+    }
+    downLoadOrder(url).then(res => {
+      message.loading('正在下载', 2.5)
+    })
+   
+  }
+  // downLoadOrder
   const actionRef=useRef(getData)
   const search = async () => {
     const fieldsValue = await form.validateFields();
@@ -244,7 +313,7 @@ export default () => {
           </Col>
           <Col className="gutter-row" span={3}>
             <div style={style}>
-              <Button type="primary" shape="">
+              <Button type="primary" shape="" onClick={()=>exportThis(0)}>
                 导出本页
             </Button>
             </div>
@@ -252,7 +321,7 @@ export default () => {
 
           <Col className="gutter-row" span={3}>
             <div style={style}>
-              <Button type="primary" shape="">
+              <Button type="primary" shape="" onClick={()=>exportThis(1)}>
                 导出全部
             </Button>
             </div>

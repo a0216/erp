@@ -3,7 +3,7 @@ import React, { useState, useEffect,useRef } from 'react';
 import { Spin, DatePicker, Input, Row, Col, Form, Select, Button, Tabs, message } from 'antd';
 import styles from './index.less';
 import TableBordered from '../orderList/TableBordered';
-import { orderList, storeList, payType, jdOrder, orderLists, orderState ,getVenderCarrier} from '../api'
+import { orderList, storeList, payType, jdOrder, orderLists, orderState ,getVenderCarrier,downLoads} from '../api'
 const { RangePicker } = DatePicker;
 const { Option } = Select
 const style = {
@@ -78,10 +78,83 @@ export default () => {
   }
  
   const actionRef = useRef(getData);
+const exports=async (e,store)=>{
+  let url = `?store=${store}&&page=${page}`
+  if(e=='1'){
+    url = `?store=${store}&&page=${page}&all=1`
+  }
+  const fieldsValue = await form.validateFields();
+  function test(s) {
+    return s.charAt(s.length - 1) === '?';
+  }
+  if (fieldsValue.date) {
+    let startTime = Math.floor(fieldsValue.date[0]._d.getTime() / 1000);
+    let endTime = Math.floor(fieldsValue.date[1]._d.getTime() / 1000);
+    if (fieldsValue.date[0]) {
+      if (test(url)) {
+        url += `startTime=${startTime}`
+      } else {
+        url += `&startTime=${startTime}`
+      }
+    }
+    if (fieldsValue.date[1]) {
+      if (test(url)) {
+        url += `endTime=${endTime}`
+      } else {
+        url += `&endTime=${endTime}`
+      }
+    }
+  }
 
+  if (fieldsValue.code) {
+    if (test(url)) {
+      url += `code=${fieldsValue.code}`
+    } else {
+      url += `&code=${fieldsValue.code}`
+    }
+  }
+  if (fieldsValue.state) {
+    if (test(url)) {
+      url += `state=${fieldsValue.state}`
+    } else {
+      url += `&state=${fieldsValue.state}`
+    }
+  }
+  
+  if (fieldsValue.name) {
+    if (test(url)) {
+      url += `name=${fieldsValue.name}`
+    } else {
+      url += `&name=${fieldsValue.name}`
+    }
+  }
+  if (fieldsValue.phone) {
+    if (test(url)) {
+      url += `phone=${fieldsValue.phone}`
+    } else {
+      url += `&phone=${fieldsValue.phone}`
+    }
+  }
+  if (fieldsValue.status) {
+    if (test(url)) {
+      url += `status=${fieldsValue.status}`
+    } else {
+      url += `&status=${fieldsValue.status}`
+    }
+  }
+  if (fieldsValue.payType) {
+    if (test(url)) {
+      url += `payType=${fieldsValue.payType}`
+    } else {
+      url += `&payType=${fieldsValue.payType}`
+    }
+  }
+  downLoads(url).then(res => {
+    message.loading('正在下载', 2.5)
+  })
+}
   const search = async (store) => {
     const fieldsValue = await form.validateFields();
-
     let url = `?store=${store}&&page=${page}`
     function test(s) {
       return s.charAt(s.length - 1) === '?';
@@ -178,14 +251,17 @@ export default () => {
    
     storeList().then(res => {
       if (res.code == '200') {
-        changeId(JSON.stringify(res.data[0].id) )
-        getData(res.data[0].id,page)
-        getState(res.data[0].id)
-        getDatab(res.data[0].id)
-        changeStores(res.data.map(item => {
-          item.key = item.id;
-          return item;
-        }))
+        if(res.data.length>0){
+          changeId(JSON.stringify(res.data[0].id) )
+          getData(res.data[0].id,page)
+          getState(res.data[0].id)
+          getDatab(res.data[0].id)
+          changeStores(res.data.map(item => {
+            item.key = item.id;
+            return item;
+          }))
+        }
+      
       }
     })
     setTimeout(() => {
@@ -315,7 +391,7 @@ export default () => {
           </Col>
           <Col className="gutter-row" span={3}>
             <div style={style}>
-              <Button type="primary" shape="">
+              <Button type="primary" shape="" onClick={()=>exports(0,store)}>
                 导出本页
             </Button>
             </div>
@@ -323,7 +399,7 @@ export default () => {
 
           <Col className="gutter-row" span={3}>
             <div style={style}>
-              <Button type="primary" shape="">
+              <Button type="primary" shape="" onClick={()=>exports(1,store)}>
                 导出全部
             </Button>
             </div>
