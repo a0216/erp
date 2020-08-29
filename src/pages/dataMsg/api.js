@@ -77,6 +77,9 @@ export async function upGoods(name,data) {
 export async function goodsUp(data) {
     return request(`/goods/update`, data);
 }
+export async function goodsDel(data) {
+    return request(`/goods/del`, data);
+}
 
 export function downLoada(url){
     return  fetch(`https://erpapi.owodian.com/api/warehouse/export${url}`,{

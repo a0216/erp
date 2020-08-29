@@ -11,14 +11,7 @@ import styles from './style.less';
 import { Cascader } from 'antd';
 import Models from './Model/Model'
 import Table from './Model/Table'
-import { get } from 'lodash';
-
-
 const { Option } = Select;
-const { RangePicker } = DatePicker;
-
-
-
 
 const AdvancedForm = ({ submitting, dispatch }) => {
 
@@ -31,8 +24,6 @@ const AdvancedForm = ({ submitting, dispatch }) => {
   const [shopLists, changeShopList] = useState([]);
   const [allPrice, changePrice] = useState(0)
   const [reduces, changeReduce] = useState(0)
-
-
   const [form] = Form.useForm();
   const [error, setError] = useState([]);
 
@@ -82,9 +73,7 @@ const AdvancedForm = ({ submitting, dispatch }) => {
     getData();
   }, [])
 
-
   const onFinish = fieldsValue => {
-
     let data = {}
     data.name = fieldsValue.name;
     data.pay_type = fieldsValue.payType;
@@ -240,7 +229,7 @@ const AdvancedForm = ({ submitting, dispatch }) => {
                   <Input placeholder="请输入商品商家" />
                 </Form.Item>
               </Col> */}
-              <Button type="primary" onClick={() => handleModalVisible(true)}>
+              <Button type="primary" onClick={() => {handleModalVisible(true)}}>
                 添加商品
             </Button>
             </Row>

@@ -55,6 +55,8 @@ const Model = props => {
             visible={modalVisible}
             onOk={okHandle}
             onCancel={() => onCancel()}
+            getContainer={false} 
+
         // cancelButtonProps={{ disabled: true }}
         >
             <Form form={form}>

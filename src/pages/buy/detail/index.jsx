@@ -72,6 +72,10 @@ export default props => {
             render: (text) => <span>{text / 100}</span>,
         },
         {
+            title: '备注', dataIndex: 'comment', key: 'name',
+            render: (text) => <span>{text}</span>,
+        },
+        {
             title: '操作', 
             render: (text) => { 
                 if(text.payment_id=='0'){
@@ -111,7 +115,7 @@ export default props => {
             <br />
             <Row gutter={10}>
                 <Col span={6}>
-                    <h3>账户余额：</h3>
+    <h3>账户余额：{msg.balance/100}</h3>
                 </Col>
                 <Col span={4}>
                     <Button type="primary" onClick={()=>{handleModalVisible(true)}}>账户付款</Button>

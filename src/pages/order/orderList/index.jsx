@@ -1,9 +1,9 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import { Spin, DatePicker, Input, Row, Col, Form, Select, Button, Tabs, message } from 'antd';
 import styles from './index.less';
 import TableBordered from '../orderList/TableBordered';
-import { orderList, storeList, payType, jdOrder, orderLists, orderState } from '../api'
+import { orderList, storeList, payType, jdOrder, orderLists, orderState ,getVenderCarrier} from '../api'
 const { RangePicker } = DatePicker;
 const { Option } = Select
 const style = {
@@ -20,15 +20,21 @@ export default () => {
   const [types, changepayType] = useState([]);
   const [isClick, changeClick] = useState(false);
   const [states, changeStates] = useState([]);
+  const [allMsg,changeAll]=useState({})
+  const [lists,setlists]=useState([])
+  const [page,changePage]=useState(1)
   const reast = e => {
     message.loading('已重置', 1)
     form.resetFields();
-    getData(store)
+    getData(store,1)
+    getState(store)
   }
   // orderList
   const callback = e => {
+    changeId(e)
     search(e)
-    changeId(JSON.stringify(e))
+    getState(e)
+    getDatab(e)
   }
 
   const asyncJd = e => {
@@ -39,28 +45,44 @@ export default () => {
         changeClick(false)
         message.success('更新成功')
       }else{
+      message.error('请重新授权');
+
         setTimeout(()=>{
         changeClick(false)
         },3000)
       }
-      getData(e)
+      getData(e,page)
     })
   }
-  const getData = (store) => {
-    orderLists(`?store=${store}`).then(res => {
+  const getDatab=(store)=>{
+    getVenderCarrier(store).then(res => {
       if (res.code == '200') {
-        changeList(res.data.map(item => {
+        setlists(res.data.map(item => {
+          item.key = item.id;
+          return item
+        }))
+      }
+    })
+  }
+  const getData = (store,page) => {
+    orderLists(`?store=${store}&&page=${page}`).then(res => {
+      if (res.code == '200') {
+        changeAll(res.data)
+        changeList(res.data.data.map(item => {
           item.key = item.id;
           return item;
         }))
       }
     })
-
-
+     
   }
+ 
+  const actionRef = useRef(getData);
+
   const search = async (store) => {
     const fieldsValue = await form.validateFields();
-    let url = `?store=${store}`
+
+    let url = `?store=${store}&&page=${page}`
     function test(s) {
       return s.charAt(s.length - 1) === '?';
     }
@@ -90,6 +112,14 @@ export default () => {
         url += `&code=${fieldsValue.code}`
       }
     }
+    if (fieldsValue.state) {
+      if (test(url)) {
+        url += `state=${fieldsValue.state}`
+      } else {
+        url += `&state=${fieldsValue.state}`
+      }
+    }
+    
     if (fieldsValue.name) {
       if (test(url)) {
         url += `name=${fieldsValue.name}`
@@ -120,14 +150,22 @@ export default () => {
     }
     orderLists(url).then(res => {
       if (res.code == '200') {
-        changeList(res.data.map(item => {
+        changeAll(res.data)
+        changeList(res.data.data.map(item => {
           item.key = item.id;
           return item;
         }))
       }
     })
   }
- 
+  const getState = (store) => {
+    orderState(store).then(res => {
+      if (res.code == '200') {
+        changeStates(res.data)
+      }
+    })
+   
+  }
   useEffect(() => {
     payType({ method: 'GET' }).then(res => {
       if (res.code == '200') {
@@ -137,15 +175,13 @@ export default () => {
         }))
       }
     })
-    orderState().then(res => {
-      if (res.code == '200') {
-        changeStates(res.data)
-      }
-    })
+   
     storeList().then(res => {
       if (res.code == '200') {
         changeId(JSON.stringify(res.data[0].id) )
-        getData(res.data[0].id)
+        getData(res.data[0].id,page)
+        getState(res.data[0].id)
+        getDatab(res.data[0].id)
         changeStores(res.data.map(item => {
           item.key = item.id;
           return item;
@@ -214,7 +250,7 @@ export default () => {
           </Col>
           <Col className="gutter-row" span={4}>
             {/* <Button type="primary" shape="" onClick={search}> */}
-            <Button type="primary" shape="" onClick={search}>
+            <Button type="primary" shape="" onClick={()=>{search(store)}}>
               搜索
             </Button>
           </Col>
@@ -301,6 +337,12 @@ export default () => {
         </Tabs>
         <TableBordered
           list={list}
+          allMsg={allMsg}
+          changePage={changePage}
+          actionRef={actionRef}
+          store={store}
+          page={page}
+          lists={lists}
         />
         <div
           style={{

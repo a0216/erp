@@ -23,7 +23,10 @@ const Model = props => {
         // console.log(fieldsValue)
         let formdata = new FormData()
         formdata.append('name', fieldsValue.name);
-        formdata.append('comment', fieldsValue.code);
+        if(fieldsValue.comment){
+            formdata.append('comment', fieldsValue.comment);
+
+        }
         if (props.type == '1') {
             addProductMsg(props.nowName, { method: "POST", data: formdata }).then(res => {
                 if (res.code == '200') {
@@ -77,7 +80,7 @@ const Model = props => {
                     <Col lg={12} md={12} sm={24}>
                         <FormItem
                             label="备注:"
-                            name="code"
+                            name="comment"
 
                         >
                             <Input placeholder="请输入备注"

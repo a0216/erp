@@ -35,7 +35,10 @@ const Model = props => {
     })
     const getData = () => {
         getList({ method: "GET" },'').then(res => {
-            changeList(res.data.data)
+            changeList(res.data.data.map(item=>{
+                item.key=item.id;
+                return item;
+            }))
         })
     }
 
@@ -44,7 +47,10 @@ const Model = props => {
         getRole({ method: "GET" }, e).then(res => {
             // console.log(res)
             if (res.data.length > 0) {
-                changeRole(res.data)
+                changeRole(res.data.map(item=>{
+                    item.key=item.id;
+                    return item;
+                }))
             } else {
                 notification.open({
                     message: `请先添加职位`,
@@ -62,7 +68,6 @@ const Model = props => {
         // form.resetFields();
         handleAdd(fieldsValue);
         let formData = new FormData();
-
         if (fieldsValue.role) {
             formData.append('role_id', fieldsValue.role);
         } else {
@@ -94,6 +99,7 @@ const Model = props => {
             onOk={okHandle}
             onCancel={onCancel}
             width={800}
+            getContainer={false} 
         // state={state}
         >
             <Form form={form}>

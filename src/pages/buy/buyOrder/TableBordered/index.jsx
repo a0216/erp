@@ -235,7 +235,7 @@ const TableBordered = props => {
     {
       title: '差额',
       dataIndex: 'reduce_price',
-      render: (text) => <span>{text}</span>,
+      render: (text) => <span>{text/100}</span>,
     },
 
     {
@@ -246,7 +246,7 @@ const TableBordered = props => {
     {
       title: '采购合计',
       dataIndex: 'allPrice',
-      render: (text) => <span>{text}</span>,
+      render: (text) => <span>{text/100}</span>,
     },
     {
       title: '补差合计',
@@ -263,12 +263,7 @@ const TableBordered = props => {
       dataIndex: 'put_num',
       render: (text) => <span>{text}</span>,
     },
-    {
-      title: '入库合计',
-      dataIndex: 'purchase_price',
-      render: (text) => <span>{text}</span>,
-    },
-
+  
     {
       title: '备注',
       dataIndex: 'comment',

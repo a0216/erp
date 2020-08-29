@@ -5,6 +5,7 @@ import Models from './Model'
 import { shopList, wareSelects } from '../../../allNeed'
 const { Option } = Select
 import { productList, sendPay, upApply } from '../../api'
+import request from '@/utils/request';
 
 
 const FormItem = Form.Item;
@@ -39,7 +40,7 @@ const Model = props => {
         changenowLists(e)
     }
     useEffect(() => {
-        shopList({ method: 'GET' }).then((res) => {
+        request('/shop/list?property=1', { method: 'GET' }).then((res) => {
             if (res.code == '200') {
                 res.data.map(item => {
                     item.key = item.id;
@@ -76,6 +77,8 @@ const Model = props => {
         sendList.map(res=>{
             res.all=res.all*100;
             res.reduce=res.reduce*100;
+            res.purchasePrice=res.purchasePrice*100;
+            
             res.bidPrice=res.bidPrice*100;
             return res
         })

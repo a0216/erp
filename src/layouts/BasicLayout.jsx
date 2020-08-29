@@ -3,9 +3,9 @@
  * You can view component api by:
  * https://github.com/ant-design/ant-design-pro-layout
  */
-import ProLayout, { DefaultFooter } from '@ant-design/pro-layout';
+import ProLayout, { DefaultFooter, SettingDrawer } from '@ant-design/pro-layout';
 import React, { useEffect } from 'react';
-import { Link, useIntl, connect } from 'umi';
+import { Link, useIntl, connect, history } from 'umi';
 import { GithubOutlined } from '@ant-design/icons';
 import { Result, Button } from 'antd';
 import Authorized from '@/utils/Authorized';
@@ -29,41 +29,38 @@ const noMatch = (
 /**
  * use Authorized check all menu item
  */
+const sendData = JSON.parse(localStorage.getItem('roles'))
 const menuDataRender = menuList =>
   menuList.map(item => {
+    let newArr = [];
+    let newItem={};
+    sendData.map(resa => {
+      newArr.push(resa)
+      resa.permissions.map(itema => {
+        newArr.push(itema)
+      })
+    })
+    newArr.map(res => {
+      if (res.local == item.locale) {
+        return newItem=item;
+      }
+    })
     const localItem = {
-      ...item,
+      ...newItem,
       children: item.children ? menuDataRender(item.children) : undefined,
     };
     return Authorized.check(item.authority, localItem, null);
+
   });
 
 const defaultFooterDom = (
   <DefaultFooter
     copyright={`${new Date().getFullYear()} 河南美翼电子商务有限公司出品`}
     links={[
-      {
-        key: 'erp',
-        title: 'erp',
-        href: 'https://baidu.com',
-        blankTarget: true,
-      },
-      // {
-      //   key: 'github',
-      //   title: <GithubOutlined />,
-      //   href: 'https://github.com/ant-design/ant-design-pro',
-      //   blankTarget: true,
-      // },
-      // {
-      //   key: 'Ant Design',
-      //   title: 'Ant Design',
-      //   href: 'https://ant.design',
-      //   blankTarget: true,
-      // },
+
     ]}
   />
 );
-
 const BasicLayout = props => {
   const {
     dispatch,
@@ -83,6 +80,20 @@ const BasicLayout = props => {
         type: 'user/fetchCurrent',
       });
     }
+    // nowList.map(res=>{
+    //   sendData.map(resa=>{
+    //     if(res.name==resa.local){
+    //       res.routes.map(item=>{
+    //         resa.permissions.map(itema=>{
+    //           if(item.name==itema.local){
+    //             return item;
+    //           }
+    //         })
+    //       })
+    //       return res
+    //     }
+    //   })
+    // })
   }, []);
   /**
    * init variables
@@ -102,50 +113,56 @@ const BasicLayout = props => {
   };
   const { formatMessage } = useIntl();
   return (
-    <ProLayout
-      logo={logo}
-      formatMessage={formatMessage}
-      menuHeaderRender={(logoDom, titleDom) => (
-        <Link to="/">
-          {logoDom}
-          {titleDom}
-        </Link>
-      )}
-      onCollapse={handleMenuCollapse}
-      menuItemRender={(menuItemProps, defaultDom) => {
-        if (menuItemProps.isUrl || !menuItemProps.path) {
-          return defaultDom;
-        }
+    <>
+      <ProLayout
+        logo={logo}
+        formatMessage={formatMessage}
+        onCollapse={handleMenuCollapse}
+        onMenuHeaderClick={() => history.push('/')}
+        menuItemRender={(menuItemProps, defaultDom) => {
+          if (menuItemProps.isUrl || !menuItemProps.path) {
+            return defaultDom;
+          }
 
-        return <Link to={menuItemProps.path}>{defaultDom}</Link>;
-      }}
-      breadcrumbRender={(routers = []) => [
-        {
-          path: '/',
-          breadcrumbName: formatMessage({
-            id: 'menu.home',
-          }),
-        },
-        ...routers,
-      ]}
-      itemRender={(route, params, routes, paths) => {
-        const first = routes.indexOf(route) === 0;
-        return first ? (
-          <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
-        ) : (
-          <span>{route.breadcrumbName}</span>
-        );
-      }}
-      footerRender={() => defaultFooterDom}
-      menuDataRender={menuDataRender}
-      rightContentRender={() => <RightContent />}
-      {...props}
-      {...settings}
-    >
-      <Authorized authority={authorized.authority} noMatch={noMatch}>
-        {children}
-      </Authorized>
-    </ProLayout>
+          return <Link to={menuItemProps.path}>{defaultDom}</Link>;
+        }}
+        breadcrumbRender={(routers = []) => [
+          {
+            path: '/',
+            breadcrumbName: formatMessage({
+              id: 'menu.home',
+            }),
+          },
+          ...routers,
+        ]}
+        itemRender={(route, params, routes, paths) => {
+          const first = routes.indexOf(route) === 0;
+          return first ? (
+            <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
+          ) : (
+              <span>{route.breadcrumbName}</span>
+            );
+        }}
+        footerRender={() => defaultFooterDom}
+        menuDataRender={menuDataRender}
+        rightContentRender={() => <RightContent />}
+        {...props}
+        {...settings}
+      >
+        <Authorized authority={authorized.authority} noMatch={noMatch}>
+          {children}
+        </Authorized>
+      </ProLayout>
+      <SettingDrawer
+        settings={settings}
+        onSettingChange={config =>
+          dispatch({
+            type: 'settings/changeSetting',
+            payload: config,
+          })
+        }
+      />
+    </>
   );
 };
 

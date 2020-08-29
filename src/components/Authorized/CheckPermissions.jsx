@@ -20,6 +20,9 @@ const checkPermissions = (authority, currentAuthority, target, Exception) => {
 
   if (Array.isArray(authority)) {
     if (Array.isArray(currentAuthority)) {
+      if (authority.filter(v => currentAuthority.includes(v)).length > 0) {
+        return target;
+      }
       if (currentAuthority.some(item => authority.includes(item))) {
         return target;
       }
@@ -28,6 +31,7 @@ const checkPermissions = (authority, currentAuthority, target, Exception) => {
     }
 
     return Exception;
+
   } // string 处理
 
   if (typeof authority === 'string') {
@@ -36,6 +40,11 @@ const checkPermissions = (authority, currentAuthority, target, Exception) => {
         return target;
       }
     } else if (authority === currentAuthority) {
+      if (currentAuthority.indexOf(authority) >= 0) {
+
+        return target;
+      }
+
       return target;
     }
 

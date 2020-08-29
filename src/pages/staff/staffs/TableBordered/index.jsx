@@ -44,7 +44,6 @@ const TableBordered = props => {
     })
     // /user/add
 
-
   }
   const delConfirm = (e) => {
     confirm({

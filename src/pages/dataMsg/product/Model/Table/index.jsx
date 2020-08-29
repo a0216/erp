@@ -45,7 +45,6 @@ const EditableCell = ({
       toggleEdit();
       handleSave({ ...record, ...values });
     } catch (errInfo) {
-      console.log('Save failed:', errInfo);
     }
   };
 
@@ -151,6 +150,12 @@ class EditableTable extends React.Component {
       },
     ];
     if (props.type == '2') {
+      props.sendList.map(res=>{
+        res.cost_price=  res.cost_price/100;
+        res.sale_price=  res.sale_price/100;
+        res.get_price=  res.get_price/100;
+        return res;
+      })
       this.state = {
         dataSource: props.sendList,
         count: 2,

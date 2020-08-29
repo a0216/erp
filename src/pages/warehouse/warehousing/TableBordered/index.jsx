@@ -31,7 +31,6 @@ const TableBordered = props => {
     }
   }
 
-  // console.log(props.tableList)
   const expandedRowRender = (record) => {
     const columns = [
       {

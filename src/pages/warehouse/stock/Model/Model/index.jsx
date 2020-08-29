@@ -43,7 +43,6 @@ const Models = props => {
 
     const onSelectChange = selectedRowKeys => {
         setselectedRowKeys(selectedRowKeys)
-        console.log(props)
         props.product.map(res => {
             selectedRowKeys.map(item => {
                 if (res.id == item) {

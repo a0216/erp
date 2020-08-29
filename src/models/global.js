@@ -112,4 +112,130 @@ const GlobalModel = {
     },
   },
 };
+const  route= [{
+  path: '/',
+  redirect: '/welcome',
+},
+{
+  path: '/welcome',
+  name: 'welcome',
+  component: './Welcome',
+},
+{
+  path: '/buy',
+  name: 'buy',
+  routes: [{
+    path: './buy/buyOrder',
+    name: 'buyOrder',
+    component: './buy/buyOrder',
+  },
+  {
+    path: '/buy/detail/:id',
+    name: 'detail',
+    component: './buy/detail',
+    hideInMenu: true,
+  },
+  {
+    path: './buy/bill',
+    name: 'bill',
+    component: './buy/bill',
+  },
+  ]
+},
+{
+  path: '/warehouse',
+  name: 'warehouse',
+  routes: [
+    {
+      path: './warehouse/stock',
+      name: 'stock',
+      component: './warehouse/stock',
+    },
+    {
+      path: './warehouse/warehousing',
+      name: 'warehousing',
+      component: './warehouse/warehousing',
+    },
+    {
+      path: './warehouse/outbound',
+      name: 'outbound',
+      component: './warehouse/outbound',
+    },
+  ]
+},
+{
+  path: '/order',
+  name: 'order',
+  routes: [
+    {
+      path: './order/orderList',
+      name: 'orderList',
+      component: './order/orderList',
+    },
+    {
+      path: './order/orderListb',
+      name: 'orderListb',
+      component: './order/orderListb',
+    },
+    {
+      path: './order/sales',
+      name: 'sales',
+      component: './order/sales',
+    },
+  ]
+},
+
+{
+  path: '/dataMsg',
+  name: 'dataMsg',
+  routes: [
+    {
+      path: './dataMsg/product',
+      name: 'product',
+      component: './dataMsg/product',
+    },
+    {
+      path: './dataMsg/shop',
+      name: 'shop',
+      component: './dataMsg/shop',
+    },
+    {
+      path: './dataMsg/supplier',
+      name: 'supplier',
+      component: './dataMsg/supplier',
+    },
+    {
+      path: './dataMsg/warehouse',
+      name: 'warehouse',
+      component: './dataMsg/warehouse',
+    },
+    {
+      path: './dataMsg/productMsg',
+      name: 'productMsg',
+      component: './dataMsg/productMsg',
+    },
+    {
+      path: './dataMsg/warehouseMsg',
+      name: 'warehouseMsg',
+      component: './dataMsg/warehouseMsg',
+    },
+  ]
+},
+{
+  path: '/staff',
+  name: 'staff',
+  routes: [
+    {
+      path: './staff/staffs',
+      name: 'staffs',
+      component: './staff/staffs',
+    },
+    {
+      path: './staff/department',
+      name: 'department',
+      component: './staff/department',
+    }
+  ]
+},
+]
 export default GlobalModel;

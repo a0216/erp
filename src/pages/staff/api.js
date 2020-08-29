@@ -43,6 +43,11 @@ export async function changeStatus(data) {
 export async function searchUser(url,data) {
   return request(url, data);
 }
+export async function changePsd(data) {
+  return request('/auth/resetPwd', data);
+}
+
+
 
 
 

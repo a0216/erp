@@ -75,7 +75,7 @@ const TableBordered = props => {
 
     {
       title: '出库单号',
-      dataIndex: 'id',
+      dataIndex: 'code',
     },
     // {
     //   title: '单据类型',
@@ -103,7 +103,7 @@ const TableBordered = props => {
     },
     {
       title: '商品编码',
-      dataIndex: 'code',
+      dataIndex: 'shop_code',
     },
 
     {

@@ -5,6 +5,7 @@ import styles from './index.less';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import Modela from '../Model'
 const { confirm } = Modal;
+import {goodsDel} from '../../api'
 
 const handleAdd = async fields => {
   const hide = message.loading('正在添加');
@@ -24,33 +25,36 @@ const handleAdd = async fields => {
 
 };
 
-const delConfirm = (e) => {
-  confirm({
-    title: '你确定要删除此商品吗?',
-    icon: <ExclamationCircleOutlined />,
-    content: '删除商品',
-    onOk() {
-      delUser({ method: "POST", data: { uid: e.id } }).then(res => {
-        if (res.code == '200') {
-          message.success("已删除")
-          props.actionRef.current()
 
-        } else {
-          message.error("删除失败")
-        }
-      })
-    },
-    onCancel() {
-      message.error("已取消")
-    },
-  });
-}
 
 const TableBordered = props => {
   props.list.map(res => {
     res.key = res.id;
     return res;
   })
+  const delConfirm = (e) => {
+    confirm({
+      title: '你确定要删除此商品吗?',
+      icon: <ExclamationCircleOutlined />,
+      content: '删除商品',
+      onOk() {
+        let data={}
+        data.id=e;
+        goodsDel({ method: "POST", data}).then(res => {
+          if (res.code == '200') {
+            message.success("已删除")
+            props.actionRef.current()
+  
+          } else {
+            message.error("删除失败")
+          }
+        })
+      },
+      onCancel() {
+        message.error("已取消")
+      },
+    });
+  }
   localStorage.setItem('productList', JSON.stringify(props.list))
   const [tableList, changeList] = useState(props.list)
   const [createModalVisible, handleModalVisible] = useState(false);

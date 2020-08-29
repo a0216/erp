@@ -26,6 +26,19 @@ const TableBordered = props => {
         dataIndex: 'num',
       },
       {
+        title: '销售单价',
+        dataIndex: 'all_price',
+        render: (text) => {
+          return <span>{text / 100}</span>
+        }
+      },  {
+        title: '开单价',
+        dataIndex: 'all_price',
+        render: (text) => {
+          return <span>{text / 100}</span>
+        }
+      },
+      {
         title: '合计',
         dataIndex: 'all_price',
         render: (text) => {
@@ -78,6 +91,20 @@ const TableBordered = props => {
       title: '付款状态',
       dataIndex: 'pay_name',
       // render: (text) => {if(text=='1'){<span></span>}else if(text=='2'){<span></span>}},
+    }, 
+     {
+      title: '补差合计',
+      dataIndex: 'all_price',
+      render: (text) => {
+        return <span>{text / 100}</span>
+      }
+    },
+    {
+      title: '开单价',
+      dataIndex: 'all_price',
+      render: (text) => {
+        return <span>{text / 100}</span>
+      }
     },
     {
       title: '总价格',

@@ -107,5 +107,4 @@ export default () => {
 };
 
 function handleChange(value) {
-  console.log(`selected ${value}`);
 }

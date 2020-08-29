@@ -51,7 +51,6 @@ const EditableCell = ({
       toggleEdit();
       handleSave({ ...record, ...values });
     } catch (errInfo) {
-      console.log('Save failed:', errInfo);
     }
   };
 
@@ -227,7 +226,6 @@ class EditableTable extends React.Component {
     });
   };
   onSelectChange = selectedRowKeys => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
     this.props.changeSelect(selectedRowKeys)
 

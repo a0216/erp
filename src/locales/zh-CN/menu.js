@@ -1,6 +1,5 @@
 export default {
   'menu.welcome': '欢迎',
-  'menu.more-blocks': '更多区块',
   'menu.home': '首页',
   'menu.buy': '采购管理',
   'menu.buy.buyOrder': '采购订单',
@@ -29,6 +28,8 @@ export default {
   'menu.staff': '系统设置',
   'menu.staff.staffs': '员工管理',
   'menu.staff.department': '部门管理',
+  'menu.staff.changePsd': '修改密码',
+  
 
   
   'menu.login': '登录',

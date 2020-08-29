@@ -40,7 +40,10 @@ export default () => {
   const getData = () => {
     getList({ method: "GET" },'').then(res => {
       if(res.code=='200'){
-        changeList(res.data.data)
+        changeList(res.data.data.map(item=>{
+          item.key=item.id;
+          return item;
+        }))
       }
     })
   }
@@ -48,7 +51,10 @@ export default () => {
     const fieldsValue = await form.validateFields();
     getList({ method: "GET" },`?departmentId=${fieldsValue.id}`).then(res => {
       if(res.code=='200'){
-        changeList(res.data.data)
+        changeList(res.data.data.map(item=>{
+          item.key=item.id;
+          return item;
+        }))
       }
     })
   }
@@ -157,5 +163,4 @@ export default () => {
 };
 
 function handleChange(value) {
-  console.log(`selected ${value}`);
 }

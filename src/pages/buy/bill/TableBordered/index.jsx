@@ -12,10 +12,7 @@ const TableBordered = props => {
   const [createModalVisible, handleModalVisible] = useState(false);
   const [createModalVisibleb, handleModalVisibleb] = useState(false);
   const [nowMsg, changeMsg] = useState();
-
-
   const handleAdd = (e) => {
-    console.log(e)
     if(e=='200'){
       return true
     }else{

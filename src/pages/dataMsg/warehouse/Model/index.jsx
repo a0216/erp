@@ -58,6 +58,8 @@ const Model = props => {
         formdata.append('status', fieldsValue.status);
         formdata.append('code', fieldsValue.code);
         formdata.append('area', fieldsValue.address);
+        formdata.append('comment', fieldsValue.comment);
+        
         if (props.type == '1') {
             addWare({ method: "POST", data: formdata }).then(res => {
                 if (res.code == '200') {
@@ -231,6 +233,19 @@ const Model = props => {
                             ]}
                         >
                             <Input placeholder="请输入仓库地址"
+                                style={{
+                                    width: 600,
+                                }}
+                            />
+                        </FormItem>
+                    </Col>
+                    <Col lg={24} md={24} sm={24}>
+                        <FormItem
+                            label="备注: "
+                            name="comment"
+                        
+                        >
+                            <Input placeholder="请输入备注"
                                 style={{
                                     width: 600,
                                 }}

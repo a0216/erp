@@ -1,7 +1,6 @@
 /* eslint-disable eslint-comments/disable-enable-pair */
-
 /* eslint-disable import/no-mutable-exports */
-let CURRENT = 'NULL';
+let CURRENT =JSON.parse(localStorage.getItem('roles')) ;
 
 /**
  * use  authority or getAuthority
@@ -20,7 +19,7 @@ const renderAuthorize = Authorized => currentAuthority => {
       CURRENT = currentAuthority;
     }
   } else {
-    CURRENT = 'NULL';
+    CURRENT = JSON.parse(localStorage.getItem('roles'));
   }
 
   return Authorized;

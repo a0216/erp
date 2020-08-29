@@ -149,7 +149,6 @@ export default () => {
   }
   const search = async () => {
     const fieldsValue = await form.validateFields();
-    console.log(fieldsValue)
     let url = '?';
     function test(s) {
       return s.charAt(s.length - 1) === '?';

@@ -20,12 +20,14 @@ const Model = props => {
         let arr = []
         // let nowIds=''
         props.list.map(item => {
+            item.key=item.id;
             item.roles.map(res => {
                 if (res.name == props.nowId) {
+                    res.key=res.id;
                     nowIds=res.id
                     // changeId(res.id)
                     arr.push(res.permissions.map(ids => {
-                        return ids.permission_id
+                        return ids.permission_id;
                     }))
                 }
             })
@@ -35,6 +37,7 @@ const Model = props => {
                 item.permissions.map(items => {
                     for (let i in arr[0]) {
                         if (items.id == arr[0][i]) {
+                            item.key=item.id;
                             items.isCheck = true;
                             return items
                         }
@@ -100,7 +103,7 @@ const Model = props => {
                         ress.isCheck = false;
                         return ress;
                     })
-                    item.key = item.id
+                    item.key = item.id;
                     item.allIn = false;
                     return item;
                 })
@@ -214,7 +217,7 @@ const Model = props => {
                             <Checkbox
                                 indeterminate={item.allIn}
                                 onChange={changeAll}
-                                checked={item.allIn}
+                                defaultChecked={item.allIn}
                                 key={item.id}
                                 value={item.id}
                             >
@@ -223,7 +226,7 @@ const Model = props => {
                         </div>
                         <br />
                         {item.permissions.map(res => {
-                            return <Checkbox value={res.id} checked={res.isCheck} key={res.id} onChange={changes}>
+                            return <Checkbox value={res.id} defaultChecked={res.isCheck} key={res.id} onChange={changes}>
                                 {res.name}
                             </Checkbox>
                         })}

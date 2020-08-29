@@ -1,7 +1,6 @@
 import request from '@/utils/request';
 
 export async function fakeAccountLogin(params) {
-  console.log(params);
   return request('/auth/login', {
     method: 'POST',
     data: {  phone: params.userName, password: params.password  },

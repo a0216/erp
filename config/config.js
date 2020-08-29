@@ -3,11 +3,11 @@ import {
   defineConfig
 } from 'umi';
 import defaultSettings from './defaultSettings';
-// import proxy from './proxy';
 
 const {
   REACT_APP_ENV
 } = process.env;
+
 export default defineConfig({
   hash: true,
   antd: {},
@@ -27,6 +27,7 @@ export default defineConfig({
   targets: {
     ie: 11,
   },
+  // routes:[],
   // umi routes: https://umijs.org/docs/routing
   routes: [{
     path: '/user',
@@ -35,6 +36,7 @@ export default defineConfig({
       name: 'login',
       path: '/user/login',
       component: './user/login',
+      
     },],
   },
   {
@@ -217,21 +219,27 @@ export default defineConfig({
             name: 'department',
             icon: 'smile',
             component: './staff/department',
+          },
+          {
+            path: './staff/changePsd',
+            name: 'changePsd',
+            icon: 'smile',
+            component: './staff/changePsd',
           }
         ]
       },
 
       // dataMsg
-      // Warehouse
-      {
-        name: 'list.table-list',
-        icon: 'table',
-        path: '/list',
-        component: './ListTableList',
-      },
-      {
-        component: './404',
-      },
+      // // Warehouse
+      // {
+      //   name: 'list.table-list',
+      //   icon: 'table',
+      //   path: '/list',
+      //   component: './ListTableList',
+      // },
+      // {
+      //   component: './404',
+      // },
       ],
     },
     {
@@ -264,5 +272,6 @@ export default defineConfig({
   },
   // base: '/dist/',
   // publicPath: '/dist/',
-  devtool: 'source-map'
+  devtool: 'source-map',
+  
 });

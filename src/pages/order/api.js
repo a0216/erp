@@ -32,12 +32,17 @@ export async function jdOrder(store) {
 export async function orderLists(send) {
     return request(`/jd/order/list${send}`, {method:'get'});
 }
-export async function orderState() {
-    return request('/jd/order/state', {method:'get'});
+export async function orderState(store) {
+    return request(`/jd/order/state?store=${store}`, {method:'get'});
 }
 export async function storeList() {
     return request('/store/list',  {method:'get'});
 }
-
+export async function getVenderCarrier(store) {
+    return request(`/jd/order/getVenderCarrier?storeId=${store}`,  {method:'get'});
+}
+export async function shipping(data) {
+    return request(`/jd/order/shipping`,  data);
+}
 
 

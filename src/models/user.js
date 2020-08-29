@@ -1,6 +1,7 @@
 import { queryCurrent, query as queryUsers } from '@/services/user';
 
 const UserModel = {
+  
   namespace: 'user',
   state: {
     currentUser: {
@@ -29,6 +30,7 @@ const UserModel = {
   reducers: {
     saveCurrentUser(state, action) {
       localStorage.setItem("name",JSON.stringify(action.payload.name))
+      localStorage.setItem("roles",JSON.stringify(action.payload.roles))
       return { ...state, currentUser: action.payload || {} };
     },
 

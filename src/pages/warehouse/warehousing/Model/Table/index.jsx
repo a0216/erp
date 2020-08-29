@@ -264,7 +264,6 @@ class EditableTable extends React.Component {
     });
   };
   onSelectChange = selectedRowKeys => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
     this.props.changeSelect(selectedRowKeys)
 

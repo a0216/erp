@@ -153,17 +153,14 @@ class EditableTable extends React.Component {
         dataIndex: 'num',
         editable: true,
         required: true,
-        value: ''
       },
       {
         title: '补差合计',
         dataIndex: 'reduceAll',
-
       },
       {
         title: '合计',
         dataIndex: 'all',
-
       },
       {
         title: '单位',

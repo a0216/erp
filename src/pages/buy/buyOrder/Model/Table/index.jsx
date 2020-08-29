@@ -51,7 +51,7 @@ const EditableCell = ({
       toggleEdit();
       handleSave({ ...record, ...values });
     } catch (errInfo) {
-      console.log('Save failed:', errInfo);
+      // console.log('Save failed:', errInfo);
     }
   };
 
@@ -288,7 +288,10 @@ class EditableTable extends React.Component {
     if (row.bidPrice&&row.purchasePrice) {
       row.bidPrice=Math.floor(row.bidPrice*100)/100
       row.purchasePrice=Math.floor(row.purchasePrice*100)/100
-      row.reduce = (row.bidPrice*100 -row.purchasePrice*100)/100;
+    }
+    if (row.purchasePrice){
+      row.reduce = (row.purchasePrice*100 -row.cost_price)/100;
+
     }
     if (row.num) {
       row.all=Math.floor(row.purchasePrice * row.num*100)/100

@@ -1,10 +1,11 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef,withRouter } from 'react';
 import { Spin, DatePicker, Input, Row, Col, message, Select, Button, Tabs, Form } from 'antd';
 import styles from './index.less';
 import TableBordered from '../buyOrder/TableBordered';
 import { shopList, wareSelects } from '../../allNeed'
 import { payment, searchUser, downLoads } from '../api'
+import request from '@/utils/request';
 
 
 import Model from '../buyOrder/Model'
@@ -223,6 +224,7 @@ export default () => {
 
 
   }
+  
   const actionRef = useRef(getData);
 
   useEffect(() => {
@@ -248,7 +250,7 @@ export default () => {
         changetWare(res.data)
       }
     })
-    shopList({ method: 'GET' }).then((res) => {
+    request('/shop/list?property=1', { method: 'GET' }).then((res) => {
       if(res){
         if (res.code == '200') {
           res.data.map(item => {
@@ -460,4 +462,3 @@ export default () => {
     </PageHeaderWrapper>
   );
 };
-

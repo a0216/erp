@@ -33,7 +33,7 @@ const actionRef = useRef(props.getData);
     {
       title: '备注',
       className: 'column-money',
-      dataIndex: 'money',
+      dataIndex: 'comment',
     },
      {
       title: '操作',

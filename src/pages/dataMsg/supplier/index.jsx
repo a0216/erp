@@ -101,11 +101,11 @@ export default () => {
         <Row gutter={16}>
           <Col className="gutter-row" span={5}>
             <FormItem
-              label=" 商品编码： "
+              label=" 商家编码： "
               name="code"
             >
               <Input
-                placeholder="请输入商品编码"
+                placeholder="请输入商家编码"
                 style={{
                   width: 180,
                 }}
@@ -114,11 +114,11 @@ export default () => {
           </Col>
           <Col className="gutter-row" span={5}>
             <FormItem
-              label=" 商品名称： "
+              label=" 商家名称： "
               name="name"
             >
               <Input
-                placeholder="请输入商品名称"
+                placeholder="请输入商家名称"
                 style={{
                   width: 180,
                 }}
