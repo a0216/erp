@@ -91,6 +91,7 @@ const Modela = props => {
                 if (res.code == '200') {
                     onCancel()
                     handleAdd(res.code)
+                    changeList([])
                 }
             })
         } else {
@@ -99,6 +100,7 @@ const Modela = props => {
                 if (res.code == '200') {
                     onCancel()
                     handleAdd(res.code)
+                    changeList([])
                 }
             })
 
@@ -113,7 +115,7 @@ const Modela = props => {
             visible={modalVisible}
             onOk={okHandle}
             onCancel={() => onCancel()}
-            width={1000}
+            width={1800}
         >
             <Form form={form}>
                 <Row>

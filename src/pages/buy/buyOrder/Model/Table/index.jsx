@@ -290,8 +290,8 @@ class EditableTable extends React.Component {
       row.purchasePrice=Math.floor(row.purchasePrice*100)/100
     }
     if (row.purchasePrice){
-      row.reduce = (row.purchasePrice*100 -row.cost_price)/100;
-
+      row.reduce =Math.floor(row.purchasePrice*100 -row.cost_price)/100;
+      // console.log()
     }
     if (row.num) {
       row.all=Math.floor(row.purchasePrice * row.num*100)/100
@@ -347,6 +347,7 @@ class EditableTable extends React.Component {
           bordered
           dataSource={dataSource}
           columns={columns}
+          scroll={{x:1500}}
         />
       </div>
     );

@@ -11,6 +11,7 @@ const Model = props => {
     const [form] = Form.useForm();
     const { modalVisible, nowList, list, onSubmit: handleAdd, onCancel, onCheckAllChange, onChanges } = props;
     const [lists, getRole] = useState([])
+    const [sendList,changeList]=useState([])
     // const [nowIds, changeId] = useState()
     let nowIds=''
     if (props.type == '2') {
@@ -117,11 +118,12 @@ const Model = props => {
         const fieldsValue = await form.validateFields();
         form.resetFields();
 
-        const permission = []
+        let permission = []
         lists.map(item => {
             item.permissions.map(res => {
-                if (res.isCheck) {
-                    permission.push(res.id)
+                console.log(res)
+                if (res.isCheck==true) {
+                    changeList(permission.push(res.id))
                     return permission;
                 }
             })

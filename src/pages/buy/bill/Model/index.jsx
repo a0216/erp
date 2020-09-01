@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Modal, Select, Row, Col, Button, Typography, notification, message, InputNumber } from 'antd';
+import { Form, Input, Modal, Select, Row, Col, Button, Typography, DatePicker, message, InputNumber } from 'antd';
 import { shopList, wareSelects } from '../../../allNeed'
 const { Option } = Select
 import { payFor, upApply } from '../../api'
@@ -25,6 +25,7 @@ const Model = props => {
         data.payType = fieldsValue.payType;
         data.credential = fieldsValue.credential;
         data.comment = fieldsValue.comment;
+        data.payTime = Math.floor(fieldsValue.pay_time._d.getTime() / 1000);
         data.sid = props.nowMsg.id;
         payFor(data).then(res => {
             if (res.code == '200') {
@@ -106,6 +107,20 @@ const Model = props => {
                             />
 
 
+                        </FormItem>
+                    </Col>
+                    <Col lg={10} md={10} sm={24}>
+                        <FormItem
+                            label="付款日期:"
+                            name="pay_time"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: '请选择日期',
+                                },
+                            ]}
+                        >
+                             <DatePicker />
                         </FormItem>
                     </Col>
                     <Col lg={10} md={10} sm={24}>

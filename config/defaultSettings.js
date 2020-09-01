@@ -8,9 +8,7 @@ const proSettings = {
   fixSiderbar: false,
   colorWeak: false,
   menu: {
-    locale: true,
     disableLocal: true,
-
   },
   title: '伟商系统',
   pwa: false,

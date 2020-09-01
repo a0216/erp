@@ -23,8 +23,8 @@ const Model = props => {
     const [upList, changeUplist] = useState([])
 
     const getData = () => {
-        productList({ method: 'get' }).then((res)=>{
-            if(res){
+        productList({ method: 'get' }).then((res) => {
+            if (res) {
                 if (res.code == '200') {
                     changeList(res.data.map(item => {
                         item.key = item.id;
@@ -32,9 +32,9 @@ const Model = props => {
                     }))
                 }
             }
-         
+
         })
-      
+
     }
     const handleAdds = (e) => {
         changenowLists(e)
@@ -74,12 +74,13 @@ const Model = props => {
         let data = {}
         data.fare = fieldsValue.freight * 100;
         data.shopId = fieldsValue.send;
-        sendList.map(res=>{
-            res.all=res.all*100;
-            res.reduce=res.reduce*100;
-            res.purchasePrice=res.purchasePrice*100;
-            
-            res.bidPrice=res.bidPrice*100;
+        data.comment= fieldsValue.comment;
+        sendList.map(res => {
+            res.all = res.all * 100;
+            res.reduce = res.reduce * 100;
+            res.purchasePrice = res.purchasePrice * 100;
+
+            res.bidPrice = res.bidPrice * 100;
             return res
         })
         data.skuList = sendList;
@@ -117,7 +118,7 @@ const Model = props => {
             visible={modalVisible}
             onOk={okHandle}
             onCancel={onCancel}
-            width={1000}
+            width={1500}
         >
             <Form form={form}>
                 <Row>
@@ -161,6 +162,21 @@ const Model = props => {
                                 defaultValue={0}
                                 // formatter={value => `￥ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g,)}
                                 min={0} step={0.01}
+                                style={{
+                                    width: 200,
+                                }}
+                            />
+                        </FormItem>
+                    </Col>
+                    <Col lg={10} md={10} sm={24}>
+                        <FormItem
+                            label="单备注:"
+                            name="comment"
+
+                        >
+                            <Input
+                                placeholder='请输入单备注'
+                                // formatter={value => `￥ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g,)}
                                 style={{
                                     width: 200,
                                 }}

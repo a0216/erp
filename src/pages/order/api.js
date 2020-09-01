@@ -48,7 +48,13 @@ export async function getVenderCarrier(store) {
 export async function shipping(data) {
     return request(`/jd/order/shipping`,  data);
 }
+export async function syncInventory(data) {
+    return request(`/jd/order/syncInventory`,  data);
+}
 
+export async function syncState(store) {
+    return request(`/jd/order/syncState?${store}`, {method:'get'});
+}
 export function downLoads(url){
     return  fetch(`https://erpapi.owodian.com/api/jd/order/export${url}`,{
         method:"get",

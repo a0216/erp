@@ -147,6 +147,12 @@ export default () => {
     })
     
   }
+  const exportAll=()=>{
+    let url = '?all=1';
+    downLoads(url).then(res=>{
+      message.loading('正在下载中···',2.5)
+    })
+  }
   const search = async () => {
     const fieldsValue = await form.validateFields();
     let url = '?';
@@ -469,7 +475,7 @@ export default () => {
 
           <Col className="gutter-row" span={3}>
             <div  >
-              <Button type="primary" shape="">
+              <Button type="primary" shape="" onClick={exportAll}>
                 导出全部
             </Button>
             </div>

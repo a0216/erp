@@ -294,11 +294,11 @@ const TableBordered = props => {
       dataIndex: 'shop',
       render: (text) => <span>{text.name}</span>,
     },
-    // {
-    //   title: '单据类型',
-    //   dataIndex: 'category',
-    //   render: (text) => <span>{text}</span>,
-    // },
+    {
+      title: '单备注',
+      dataIndex: 'comment',
+      render: (text) => <span>{text}</span>,
+    },
     {
       title: '制单人',
       dataIndex: 'user',
