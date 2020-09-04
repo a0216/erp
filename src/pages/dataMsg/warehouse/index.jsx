@@ -179,6 +179,10 @@ const search=async()=>{
                 style={{
                   width: 180,
                 }}
+                showSearch
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {wareType.map(res=>{
                 return <Option value={res.id} key={res.id}>{res.name}</Option>
@@ -198,6 +202,10 @@ const search=async()=>{
                 style={{
                   width: 180,
                 }}
+                showSearch
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 <Option value="1">正常</Option>
                 <Option value="0">冻结</Option>

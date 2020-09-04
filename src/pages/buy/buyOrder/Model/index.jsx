@@ -49,7 +49,7 @@ const Model = props => {
                 changeshopList(res.data)
             }
         })
-        getData();
+        // getData();
 
     }, [])
     useEffect(() => {
@@ -75,11 +75,11 @@ const Model = props => {
         data.fare = fieldsValue.freight * 100;
         data.shopId = fieldsValue.send;
         data.comment= fieldsValue.comment;
+        console.log(sendList)
         sendList.map(res => {
             res.all = res.all * 100;
             res.reduce = res.reduce * 100;
             res.purchasePrice = res.purchasePrice * 100;
-
             res.bidPrice = res.bidPrice * 100;
             return res
         })
@@ -206,7 +206,6 @@ const Model = props => {
                         />
                     </Col>
                 </Row>
-
             </Form>
             <Table
                 productList={nowLists}

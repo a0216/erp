@@ -235,7 +235,7 @@ const TableBordered = props => {
     {
       title: '差额',
       dataIndex: 'reduce_price',
-      render: (text) => <span>{text/100}</span>,
+      render: (text) => <span>{text / 100}</span>,
     },
 
     {
@@ -246,7 +246,7 @@ const TableBordered = props => {
     {
       title: '采购合计',
       dataIndex: 'allPrice',
-      render: (text) => <span>{text/100}</span>,
+      render: (text) => <span>{text / 100}</span>,
     },
     {
       title: '补差合计',
@@ -263,7 +263,7 @@ const TableBordered = props => {
       dataIndex: 'put_num',
       render: (text) => <span>{text}</span>,
     },
-  
+
     {
       title: '备注',
       dataIndex: 'comment',
@@ -329,8 +329,8 @@ const TableBordered = props => {
         >
           <h2 >{allMsg.shop.name}</h2>
           <h2>
-            <span>采购总计：{allMsg.sum_purchase_price/100}元 </span>
-            <span>补差总计：{allMsg.sum_sub_price/100}元</span>
+            <span>采购总计：{allMsg.sum_purchase_price / 100}元 </span>
+            <span>补差总计：{allMsg.sum_sub_price / 100}元</span>
             <span style={{ float: 'right' }}>运费：{allMsg.fare}</span>
           </h2>
           <Table
@@ -347,15 +347,16 @@ const TableBordered = props => {
           >
           </Table>
         </Drawer>
-        <Table
+        {props.paymentList && props.paymentList.length > 0 ? <Table
           columns={columns}
           dataSource={props.paymentList}
+          defaultExpandAllRows={true}
           bordered
           expandable={{
             expandedRowRender
           }}
         >
-        </Table>
+        </Table> : ''}
 
         <Model
           onSubmit={async value => {

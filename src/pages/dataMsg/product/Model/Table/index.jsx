@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
-import { Table, Input, Button, Popconfirm, Form,InputNumber } from 'antd';
+import { Table, Input, Button, Popconfirm, Form, InputNumber } from 'antd';
 import './index.less'
 const EditableContext = React.createContext();
 
@@ -81,11 +81,21 @@ const EditableCell = ({
 
   return <td {...restProps}>{childNode}</td>;
 };
-
-// const 
+const limitDecimalsF =(value)=>{
+  let reg = /^(-)*(\d+)\.(\d\d).*$/;return `￥ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',').replace(reg,'$1$2.$3');
+};
+const limitDecimalsP =(value)=>{
+  let reg = /^(-)*(\d+)\.(\d\d).*$/;
+  return value.replace(/￥\s?|(,*)/g, '').replace(reg,'$1$2.$3');
+};
 class EditableTable extends React.Component {
   constructor(props) {
     super(props);
+
+    const changeNum = (value) => {
+      console.log(value)
+  
+    }
     this.columns = [
       {
         title: '商品编码',
@@ -107,24 +117,33 @@ class EditableTable extends React.Component {
         title: '基准价',
         dataIndex: 'cost_price',
         editable: true,
-        render:(text)=>{
-          return <InputNumber min={0} step={0.01} value={text}/>
+        render: (text) => {
+          return <InputNumber min={0} step={0.01} value={text} 
+          formatter={limitDecimalsF}
+          parser={limitDecimalsP} 
+          />
         }
       },
       {
         title: '零售价',
         dataIndex: 'get_price',
         editable: true,
-        render:(text)=>{
-          return <InputNumber min={0} step={0.01} value={text}/>
+        render: (text) => {
+          return <InputNumber min={0} step={0.01} value={text}
+          formatter={limitDecimalsF}
+          parser={limitDecimalsP} 
+          />
         }
       },
       {
         title: '促销价',
         dataIndex: 'sale_price',
         editable: true,
-        render:(text)=>{
-          return <InputNumber min={0} step={0.01} value={text}/>
+        render: (text) => {
+          return <InputNumber min={0} step={0.01} value={text}
+          formatter={limitDecimalsF}
+          parser={limitDecimalsP} 
+           />
         }
       },
       // {
@@ -150,10 +169,10 @@ class EditableTable extends React.Component {
       },
     ];
     if (props.type == '2') {
-      props.sendList.map(res=>{
-        res.cost_price=  res.cost_price/100;
-        res.sale_price=  res.sale_price/100;
-        res.get_price=  res.get_price/100;
+      props.sendList.map(res => {
+        res.cost_price = res.cost_price / 100;
+        res.sale_price = res.sale_price / 100;
+        res.get_price = res.get_price / 100;
         return res;
       })
       this.state = {
@@ -190,6 +209,16 @@ class EditableTable extends React.Component {
   };
 
   handleSave = row => {
+    // console.log(row)
+    if(row.cost_price){
+      row.cost_price=Math.floor((row.cost_price*100))/100
+    }
+    if(row.get_price){
+      row.get_price=Math.floor((row.get_price*100))/100
+    }
+    if(row.sale_price){
+      row.sale_price=Math.floor((row.sale_price*100))/100
+    }
     const newData = [...this.state.dataSource];
     const index = newData.findIndex(item => row.key === item.key);
     const item = newData[index];

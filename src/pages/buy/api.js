@@ -1,14 +1,14 @@
 import request from '@/utils/request';
 
 export async function productList(data) {
-    return request('/goods/listSku', data);
+    return request(`/goods/listSku${data}`, {method:'get'});
 }
 
 export async function sendPay(data) {
     return request('/warehouse/payment/apply', data);
 }
-export async function payment(data,e) {
-    return request(`/warehouse/payment/list${e}`, data);
+export async function payment(e) {
+    return request(`/warehouse/payment/list${e}`, {method:'get'});
 }
 export async function delPayment(data) {
     return request('/warehouse/payment/del', data);

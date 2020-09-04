@@ -255,6 +255,10 @@ export default () => {
                 style={{
                   width: 180,
                 }}
+                showSearch
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 <Option value="0">未开始</Option>
                 <Option value="1">进行中</Option>
@@ -290,6 +294,10 @@ export default () => {
                 style={{
                   width: 180,
                 }}
+                showSearch
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {payTypes.map(res => {
                   return <Option value={res.id}>{res.name}</Option>

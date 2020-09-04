@@ -343,6 +343,10 @@ const reast=e=>{
                 style={{
                   width: 180,
                 }}
+                showSearch
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {shopLists.map(res => {
                   return <Option value={res.id} key={res.id}>{res.name}</Option>
@@ -361,6 +365,10 @@ const reast=e=>{
                 style={{
                   width: 180,
                 }}
+                showSearch
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {userList.map(res => {
                   return <Option value={res.id}>{res.name}</Option>
@@ -385,6 +393,10 @@ const reast=e=>{
                   width: 180,
                 }}
                 placeholder='请选择'
+                showSearch
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {wareList.map(res => {
                   return <Option value={res.id} key={res.id}>{res.name}</Option>
@@ -449,6 +461,10 @@ const reast=e=>{
                 style={{
                   width: 180,
                 }}
+                showSearch
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                  {users.map(res => {
                   return <Option value={res.id}>{res.name}</Option>

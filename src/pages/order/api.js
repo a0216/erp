@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 
 export async function productList(data) {
-    return request('/goods/listSku', data);
+    return request(`/goods/listSku${data}`, {method:'get'});
 }
 export async function addOrder(data) {
     return request('/order/add', data);

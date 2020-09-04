@@ -43,8 +43,11 @@ export async function getProductMsg(name,data) {
 export async function addProduct(data) {
     return request('/goods/add', data);
 }
-export async function getProduct(data) {
-    return request('/goods/list', data);
+export async function getProduct(page) {
+    return request(`/goods/list?page=${page}`, {method:'get'});
+}
+export async function listCreateUser() {
+    return request(`/warehouse/listCreateUser`, {method:'get'});
 }
 
 export async function delProduct(data) {

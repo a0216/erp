@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
-import { Table, Input, Select, Popconfirm, Form } from 'antd';
+import { Table, Input, Select, Popconfirm, Form, InputNumber } from 'antd';
 import './index.less'
 import { wareSelects } from '../../../../allNeed'
 
@@ -26,8 +26,7 @@ const EditableCell = ({
   ...restProps
 }) => {
   const [editing, setEditing] = useState(false);
-
-
+  const [wareId, changeWare] = useState();
 
   const inputRef = useRef();
   const form = useContext(EditableContext);
@@ -90,16 +89,27 @@ const EditableCell = ({
 };
 var nowList = []
 var upList = []
+const limitDecimalsF = (value) => {
+  let reg = /^(-)*(\d+)\.(\d\d).*$/; return `￥ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',').replace(reg, '$1$2.$3');
+};
+const limitDecimalsP = (value) => {
+  let reg = /^(-)*(\d+)\.(\d\d).*$/;
+  return value.replace(/￥\s?|(,*)/g, '').replace(reg, '$1$2.$3');
+};
+var arrs = []
 class EditableTable extends React.Component {
   componentWillReceiveProps(props) {
-     this.setState({
+    this.setState({
       wareList: props.wareList,
     });
-    nowList = props.productList.map(res => {
+    let product=JSON.stringify(props.productList)
+    nowList = JSON.parse(product).map(res => {
       res.key = res.id;
+      res.warehouseId = '0'
       return res;
     })
-    upList = props.upList.map(res => {
+    let upsList=JSON.stringify( props.upList)
+    upList =JSON.parse(upsList).map(res => {
       res.code = res.skus.code;
       res.name = res.skus.name;
       res.color = res.skus.color;
@@ -109,35 +119,30 @@ class EditableTable extends React.Component {
       res.key = res.id;
       return res;
     })
-    
 
-  
     if (props.type == '2') {
-      if(props.productList.length>0){
-        props.productList.map(res=>{
+      if (props.productList.length > 0) {
+        props.productList.map(res => {
           // res.sku_id=res.id;
           return res;
         })
         var newArr = upList.concat(props.productList);
+      
         this.setState({
-          dataSource:newArr,
+          dataSource: newArr,
         });
-       
-      }else{
+
+      } else {
         this.setState({
           dataSource: upList,
         });
       }
-    
-
     } else {
       this.setState({
         dataSource: nowList,
       });
     }
-
   }
-
   constructor(props) {
     super(props);
     this.setState({
@@ -161,8 +166,8 @@ class EditableTable extends React.Component {
       {
         title: '基准价',
         dataIndex: 'cost_price',
-        render:(text)=>{
-        return <span>{text/100}</span>
+        render: (text) => {
+          return <span>{text / 100}</span>
         }
         // editable: true,
       },
@@ -171,7 +176,12 @@ class EditableTable extends React.Component {
         dataIndex: 'purchasePrice',
         editable: true,
         required: true,
-        value: ''
+        render: (text) => {
+          return <InputNumber min={0} step={0.01} value={text}
+            formatter={limitDecimalsF}
+            parser={limitDecimalsP}
+          />
+        }
 
       },
       {
@@ -179,7 +189,12 @@ class EditableTable extends React.Component {
         dataIndex: 'bidPrice',
         editable: true,
         required: true,
-        value: ''
+        render: (text) => {
+          return <InputNumber min={0} step={0.01} value={text}
+            formatter={limitDecimalsF}
+            parser={limitDecimalsP}
+          />
+        }
 
       },
       {
@@ -205,10 +220,14 @@ class EditableTable extends React.Component {
             // value=''
             onSelect={() => this.changeSelects(record)}
             onChange={this.onThis}
+            showSearch
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
           >
-            {this.state.wareList?this.state.wareList.map(res => {
+            {this.state.wareList ? this.state.wareList.map(res => {
               return <Option value={res.id} key={res.id} >{res.name}</Option>
-            }):''}
+            }) : ''}
           </Select>
         }
       },
@@ -249,21 +268,26 @@ class EditableTable extends React.Component {
   }
   onThis = e => {
     this.state.wareId = e.key;
+    arrs=this.state.dataSource
   }
   changeSelects = e => {
+    let arrlist=[]
     let newArr = this.state.dataSource;
+    console.log(newArr)
     newArr.map(res => {
       if (res.id == e.id) {
-        res.warehouseId = this.state.wareId
+        res.warehouseId = this.state.wareId;
+        arrlist.push(res)
         return res;
       }
-      return newArr
+      arrlist.push(res)
+      return res
     })
-
     this.setState({
-      dataSource: newArr
+      dataSource: arrlist
     })
   }
+
   handleDelete = key => {
     const dataSource = [...this.state.dataSource];
     let nows = dataSource.filter(item => item.key !== key)
@@ -274,9 +298,9 @@ class EditableTable extends React.Component {
 
   handleAdd = () => {
     const { count, dataSource } = this.state;
+    console.log(dataSource)
     const newData = {
       key: count,
-
     };
     this.setState({
       dataSource: [...dataSource, newData],
@@ -285,24 +309,25 @@ class EditableTable extends React.Component {
   };
 
   handleSave = row => {
-    if (row.bidPrice&&row.purchasePrice) {
-      row.bidPrice=Math.floor(row.bidPrice*100)/100
-      row.purchasePrice=Math.floor(row.purchasePrice*100)/100
+    console.log(row)
+    if (row.bidPrice && row.purchasePrice) {
+      row.bidPrice = Math.floor(row.bidPrice * 100) / 100
+      row.purchasePrice = Math.floor(row.purchasePrice * 100) / 100
     }
-    if (row.purchasePrice){
-      row.reduce =Math.floor(row.purchasePrice*100 -row.cost_price)/100;
+    if (row.purchasePrice) {
+      row.reduce = Math.floor(row.purchasePrice * 100 - row.cost_price) / 100;
       // console.log()
     }
     if (row.num) {
-      row.all=Math.floor(row.purchasePrice * row.num*100)/100
-      row.reduceAll=Math.floor(row.reduce * row.num*100)/100
-
+      row.all = Math.floor(row.purchasePrice * row.num * 100) / 100
+      row.reduceAll = Math.floor(row.bidPrice - row.purchasePrice) * row.num;
     }
     const newData = [...this.state.dataSource];
     const index = newData.findIndex(item => row.key === item.key);
     const item = newData[index];
     newData.splice(index, 1, { ...item, ...row });
-    this.props.toSend(newData)
+    let arr = JSON.stringify(arrs)
+    this.props.toSend(JSON.parse(arr))
     this.setState({
       dataSource: newData,
       selectedRowKeys: [],
@@ -314,6 +339,7 @@ class EditableTable extends React.Component {
   };
   render() {
     const { dataSource } = this.state;
+    arrs = dataSource
     const components = {
       body: {
         row: EditableRow,
@@ -321,15 +347,14 @@ class EditableTable extends React.Component {
       },
     };
     const { loading, selectedRowKeys } = this.state;
-
     const columns = this.columns.map(col => {
       if (!col.editable) {
         return col;
       }
-
       return {
         ...col,
         onCell: record => ({
+          arrs:dataSource,
           record,
           editable: col.editable,
           dataIndex: col.dataIndex,
@@ -340,14 +365,13 @@ class EditableTable extends React.Component {
     });
     return (
       <div>
-
         <Table
           components={components}
           rowClassName={() => 'editable-row'}
           bordered
           dataSource={dataSource}
           columns={columns}
-          scroll={{x:1500}}
+          scroll={{ x: 1500 }}
         />
       </div>
     );

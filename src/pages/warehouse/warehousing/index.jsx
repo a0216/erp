@@ -1,11 +1,11 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React, { useState, useEffect, useRef } from 'react';
-import { Spin, DatePicker, Input, Row, Col, Form, Select, Button,message } from 'antd';
+import { Spin, DatePicker, Input, Row, Col, Form, Select, Button, message } from 'antd';
 import styles from './index.less';
 import TableBordered from '../warehousing/TableBordered';
 const { RangePicker } = DatePicker;
 import Model from './Model'
-import { payment, searchUser,listApplyUser,downLoads} from '../api'
+import { payment, searchUser, listApplyUser, downLoads } from '../api'
 import { shopList, wareSelects } from '../../allNeed'
 
 
@@ -21,7 +21,10 @@ export default () => {
   const [shopLists, changeshopList] = useState([]);
   const [wareList, changetWare] = useState([]);
   const [userList, setuserList] = useState([]);
+  const [total, setTotal] = useState({});
   const [users, setuserS] = useState([]);
+  const [page, changePage] = useState(1);
+
   const handleAdd = (value) => {
     if (value == '200') {
       return true
@@ -31,8 +34,9 @@ export default () => {
   }
 
   const getData = (url) => {
-    payment({ method: 'get' },url).then(res => {
+    payment({ method: 'get' }, url).then(res => {
       if (res.code == '200') {
+        setTotal(res.data)
         changepayment(res.data.data.map(item => {
           item.key = item.id;
           return item;
@@ -41,7 +45,7 @@ export default () => {
     })
   }
   const getDatas = () => {
-    payment({ method: 'get' },'').then(res => {
+    payment('?page=1').then(res => {
       if (res.code == '200') {
         changepayment(res.data.data.map(item => {
           item.key = item.id;
@@ -50,7 +54,7 @@ export default () => {
       }
     })
   }
-  const exports=async()=>{
+  const exports = async () => {
     const fieldsValue = await form.validateFields();
     let url = '?';
     function test(s) {
@@ -142,20 +146,20 @@ export default () => {
         url += `&auditId=${fieldsValue.auditId}`
       }
     }
-    downLoads(url).then(res=>{
-      message.loading('正在下载中···',2.5)
+    downLoads(url).then(res => {
+      message.loading('正在下载中···', 2.5)
     })
-    
+
   }
-  const exportAll=()=>{
+  const exportAll = () => {
     let url = '?all=1';
-    downLoads(url).then(res=>{
-      message.loading('正在下载中···',2.5)
+    downLoads(url).then(res => {
+      message.loading('正在下载中···', 2.5)
     })
   }
   const search = async () => {
     const fieldsValue = await form.validateFields();
-    let url = '?';
+    let url = `?page=${page}`;
     function test(s) {
       return s.charAt(s.length - 1) === '?';
     }
@@ -245,7 +249,7 @@ export default () => {
         url += `&auditId=${fieldsValue.auditId}`
       }
     }
-    
+
     payment({ method: 'get' }, url).then(res => {
       if (res.code == '200') {
         changepayment(res.data.data.map(item => {
@@ -255,11 +259,11 @@ export default () => {
       }
     })
   }
- 
-  const reast=e=>{
-    message.loading('已重置',1)
-    form.resetFields(); 
-    getData('')
+
+  const reast = e => {
+    message.loading('已重置', 1)
+    form.resetFields();
+    getData('?page=1')
   }
   const actionRef = useRef(getDatas);
   useEffect(() => {
@@ -279,7 +283,7 @@ export default () => {
         }))
       }
     })
-    
+
     shopList({ method: 'GET' }).then(res => {
       if (res.code == '200') {
         res.data.map(item => {
@@ -298,7 +302,7 @@ export default () => {
         changetWare(res.data)
       }
     })
-    getData('')
+    getData('?page=1')
     setTimeout(() => {
       setLoading(false);
     }, 500);
@@ -343,6 +347,10 @@ export default () => {
                 style={{
                   width: 180,
                 }}
+                showSearch
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {shopLists.map(res => {
                   return <Option value={res.id} key={res.id}>{res.name}</Option>
@@ -354,6 +362,10 @@ export default () => {
             <FormItem
               label=" 制单人："
               name="userId"
+              showSearch
+              filterOption={(input, option) =>
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
             >
 
               <Select
@@ -385,6 +397,10 @@ export default () => {
                   width: 180,
                 }}
                 placeholder='请选择'
+                showSearch
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {wareList.map(res => {
                   return <Option value={res.id} key={res.id}>{res.name}</Option>
@@ -419,18 +435,18 @@ export default () => {
             </FormItem>
           </Col>
           <Col className="gutter-row" span={9}>
-              <Button type="primary" shape="" onClick={reast}>
-                重置
+            <Button type="primary" shape="" onClick={reast}>
+              重置
             </Button>
           </Col>
         </Row>
         <Row gutter={16} style={{ marginBottom: 20 }}>
           <Col className="gutter-row" span={5}>
-          <FormItem
+            <FormItem
               label="审核日期："
               name="auditTime"
             >
-            <RangePicker
+              <RangePicker
                 style={{
                   width: 180,
                 }}
@@ -438,17 +454,21 @@ export default () => {
             </FormItem>
           </Col>
           <Col className="gutter-row" span={5}>
-          <FormItem
+            <FormItem
               label="审核人："
               name="auditId"
             >
-            <Select
+              <Select
                 placeholder="请选择"
                 style={{
                   width: 180,
                 }}
+                showSearch
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
-                 {users.map(res => {
+                {users.map(res => {
                   return <Option value={res.id}>{res.name}</Option>
                 })}
               </Select>
@@ -495,6 +515,8 @@ export default () => {
         />
         <TableBordered
           paymentList={paymentList}
+          total={total}
+          changePage={changePage}
         />
         <div
           style={{

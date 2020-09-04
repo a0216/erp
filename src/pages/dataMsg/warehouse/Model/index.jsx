@@ -1,13 +1,14 @@
-import React ,{useEffect,useState}from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Input, Modal, Select, Row, Col, Button, message } from 'antd';
-import { addWare, upWareList,wareDeList } from '../../api';
-import {wareSelects} from '../../../allNeed'
+import { addWare, upWareList, wareDeList, listCreateUser } from '../../api';
+import { wareSelects } from '../../../allNeed'
 
 
 const Model = props => {
     const [form] = Form.useForm();
     const FormItem = Form.Item;
     const [wareMsg, setwareMsg] = useState([]);
+    const [userList, setUserList] = useState([]);
     let title = "新建仓库"
     if (props.type == '2') {
         let nowMsg = props.nowMsg
@@ -31,19 +32,26 @@ const Model = props => {
     } else {
         title = "新建仓库"
     }
-    const ware=()=>{
-        wareDeList({method:'get'}).then(res=>{
-            if(res.code=='200'){
+    const ware = () => {
+        wareDeList({ method: 'get' }).then(res => {
+            if (res.code == '200') {
                 setwareMsg(res.data)
             }
         })
     }
     useEffect(() => {
         ware()
-       
+        listCreateUser().then(res => {
+            if (res.code == '200') {
+                setUserList(res.data.map(item => {
+                    item.key = item.id;
+                    return item;
+                }))
+            }
+        })
+
     }, []);
-    const handleChange = (e) => {
-    }
+ 
     const handleMsg = (e) => {
     }
     const { modalVisible, onSubmit: handleAdd, onCancel } = props;
@@ -59,7 +67,7 @@ const Model = props => {
         formdata.append('code', fieldsValue.code);
         formdata.append('area', fieldsValue.address);
         formdata.append('comment', fieldsValue.comment);
-        
+
         if (props.type == '1') {
             addWare({ method: "POST", data: formdata }).then(res => {
                 if (res.code == '200') {
@@ -191,10 +199,10 @@ const Model = props => {
                                 style={{
                                     width: 180,
                                 }}
-                                onChange={handleChange}
                             >
-                                <Option value="1">erp</Option>
-
+                                {userList.map(res => {
+                                    return <Option value={res.id}>{res.name}</Option>
+                                })}
                             </Select>
                         </FormItem>
                     </Col>
@@ -214,7 +222,6 @@ const Model = props => {
                                 style={{
                                     width: 180,
                                 }}
-                                onChange={handleChange}
                             >
                                 <Option value="1">正常</Option>
                                 <Option value="0">冻结</Option>
@@ -243,7 +250,7 @@ const Model = props => {
                         <FormItem
                             label="备注: "
                             name="comment"
-                        
+
                         >
                             <Input placeholder="请输入备注"
                                 style={{

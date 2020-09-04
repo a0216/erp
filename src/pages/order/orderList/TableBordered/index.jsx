@@ -189,25 +189,26 @@ const TableBordered = props => {
           lists={props.lists}
           store={props.store}
         />
-
-        <Table
-          columns={columns}
-          dataSource={props.list}
-          bordered
-          expandable={{
-            expandedRowRender
-          }}
-          scroll={{ x: 1500 }}
-          pagination={{
-            showSizeChanger: false,//设置每页显示数据条数
-            showQuickJumper: false,
-            showTotal: () => `共${props.allMsg.total}条`,
-            pageSize: props.allMsg.pageSize,
-            total: props.allMsg.total,  //数据的总的条数
-            defaultCurrent: 1,
-            onChange: (current) => { props.actionRef.current(props.store, current); props.changePage(current) }, //点击当前页码
-          }}
-        />
+        {props.list && props.list.length > 0 ?
+          <Table
+            columns={columns}
+            dataSource={props.list}
+            bordered
+            defaultExpandAllRows={true}
+            expandable={{
+              expandedRowRender
+            }}
+            scroll={{ x: 1500 }}
+            pagination={{
+              showSizeChanger: false,//设置每页显示数据条数
+              showQuickJumper: false,
+              showTotal: () => `共${props.allMsg.total}条`,
+              pageSize: props.allMsg.pageSize,
+              total: props.allMsg.total,  //数据的总的条数
+              defaultCurrent: 1,
+              onChange: (current) => { props.actionRef.current(props.store, current); props.changePage(current) }, //点击当前页码
+            }}
+          /> : ''}
       </div>
     </div>
   );

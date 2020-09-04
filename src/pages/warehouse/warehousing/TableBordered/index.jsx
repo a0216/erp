@@ -150,18 +150,29 @@ const TableBordered = props => {
   return (
     <div className={styles.container}>
       <div id="components-table-demo-bordered">
+        {props.paymentList&&props.paymentList.length>0?
         <Table
           columns={columns}
           dataSource={props.paymentList}
-
+          defaultExpandAllRows={true}
           bordered
           expandable={{
             expandedRowRender
           }}
           title={() => '商品列表'}
-          footer={() => 'Footer'}
+          pagination={{
+            showSizeChanger: false,//设置每页显示数据条数
+            showQuickJumper: false,
+            showTotal: () => `共${props.total.total}条`,
+            pageSize: props.total.pageSize,
+            total: props.total.total,  //数据的总的条数
+            defaultCurrent: 1,
+            onChange: (current) => { props.actionRef.current( current); props.changePage(current) }, //点击当前页码
+          }}
+          // footer={() => 'Footer'}
+
         >
-        </Table>
+        </Table>:''}
         <Modal
           destroyOnClose
           title="审核"

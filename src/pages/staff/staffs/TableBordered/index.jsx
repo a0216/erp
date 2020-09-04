@@ -6,7 +6,7 @@ import styles from './index.less';
 import { DownOutlined } from '@ant-design/icons';
 
 import Modela from '../Model/index'
-import { restPsd, delUser,changeStatus } from '../../api'
+import { restPsd, delUser,changeStatus ,getUser} from '../../api'
 
 const { confirm } = Modal;
 
@@ -28,16 +28,13 @@ const handleAdd = async fields => {
 
 };
 
-const changeThis = (e) => {
-}
-
-
 const TableBordered = props => {
-  const [userList, changeList] = useState(props.tableList)
   const [createModalVisible, handleModalVisible] = useState(false);
   const [createModalVisibles, handleModalVisibles] = useState(false);
   const [nowMsg, changeMsg] = useState({});
+  const [nowMsgs, changeMsgs] = useState({});
   const [type, addOrch] = useState('1');
+  const [userList,changeUser]=useState([])
   const changeSwitch = (e) => {
     changeStatus({method:"POST",data:{'uid':e.id}}).then(res=>{
       console.log(res)
@@ -45,6 +42,21 @@ const TableBordered = props => {
     // /user/add
 
   }
+  
+  const getData=(page)=>{
+    getUser({ method: "GET", data: { size: 20,page:page } }).then(res => {
+      if (res.code == '200') {
+        changeMsgs(res.data)
+        changeUser(res.data.data.map(item=>{
+          item.key=item.id;
+          return item;
+        }))
+      }
+    })
+  }
+  useEffect(()=>{
+    getData(1)
+  },[])
   const delConfirm = (e) => {
     confirm({
       title: '你确定要删除此用户吗?',
@@ -150,20 +162,19 @@ const TableBordered = props => {
 
         <Table
           columns={columns}
-          dataSource={props.userList.map(res => {
-            res.key = res.id;
-            return res
-          })}
-          key={props.userList.id}
-          onRow={record => {
-            return {
-              onClick: event => { changeThis }, // 点击行
-
-            };
-          }}
+          dataSource={userList}
           bordered
           title={() => '员工列表'}
-          footer={() => 'Footer'}
+          pagination={{
+            showSizeChanger: false,//设置每页显示数据条数
+            showQuickJumper: false,
+            showTotal: () => `共${nowMsgs.total}条`,
+            pageSize:nowMsgs.pageSize,
+            total: nowMsgs.total,  //数据的总的条数
+            defaultCurrent: 1,
+            onChange: (current) => { getData(current); }, //点击当前页码
+          }}
+
         >
 
         </Table>
@@ -181,7 +192,6 @@ const TableBordered = props => {
         type={'2'}
         nowMsg={nowMsg}
       />
-
     </div>
 
   );

@@ -36,10 +36,12 @@ export default () => {
   const [createModalVisible, handleModalVisible] = useState(false);
   const [tableList, changeList] = useState([])
   const [changeModel, changeModels] = useState([])
+  const [total,changeTotal]=useState({})
   // departmentId
-  const getData = () => {
-    getList({ method: "GET" },'').then(res => {
+  const getData = (page) => {
+    getList({ method: "GET"},`?page=${page}`).then(res => {
       if(res.code=='200'){
+        changeTotal(res.data)
         changeList(res.data.data.map(item=>{
           item.key=item.id;
           return item;
@@ -49,7 +51,7 @@ export default () => {
   }
   const search = async () => {
     const fieldsValue = await form.validateFields();
-    getList({ method: "GET" },`?departmentId=${fieldsValue.id}`).then(res => {
+    getList({ method: "GET" },`?departmentId=${fieldsValue.id}&page=1`).then(res => {
       if(res.code=='200'){
         changeList(res.data.data.map(item=>{
           item.key=item.id;
@@ -61,7 +63,7 @@ export default () => {
   const actionRef = useRef(getData);
 
   useEffect(() => {
-    getData();
+    getData(1);
     setTimeout(() => {
       setLoading(false);
     }, 500);
@@ -82,6 +84,10 @@ export default () => {
                   width: 180,
                 }}
                 onChange={handleChange}
+                showSearch
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {
                   tableList.map(res => {
@@ -147,6 +153,7 @@ export default () => {
           tableList={tableList}
           changeModel={changeModel}
           actionRef={actionRef}
+          total={total}
         />
 
         <div

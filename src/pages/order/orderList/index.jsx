@@ -389,6 +389,10 @@ export default () => {
                 style={{
                   width: 180,
                 }}
+                showSearch
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {states.map(res => {
                   return <Option value={res.value}>{res.key}</Option>

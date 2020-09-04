@@ -31,7 +31,7 @@ const TableBordered = props => {
         render: (text) => {
           return <span>{text / 100}</span>
         }
-      },  {
+      }, {
         title: '开单价',
         dataIndex: 'open_price',
         render: (text) => {
@@ -91,8 +91,8 @@ const TableBordered = props => {
       title: '付款状态',
       dataIndex: 'pay_name',
       // render: (text) => {if(text=='1'){<span></span>}else if(text=='2'){<span></span>}},
-    }, 
-     {
+    },
+    {
       title: '补差合计',
       dataIndex: 'all_sub_price',
       render: (text) => {
@@ -140,17 +140,19 @@ const TableBordered = props => {
         >
 
         </Model>
-        <Table
-          columns={columns}
-          dataSource={props.list}
-          bordered
-          expandable={{
-            expandedRowRender
-          }}
-          scroll={{ x: 1500 }}
-          title={() => 'Header'}
-          footer={() => 'Footer'}
-        />
+        {props.list && props.list.length > 0 ?
+          <Table
+            defaultExpandAllRows={true}
+            columns={columns}
+            dataSource={props.list}
+            bordered
+            expandable={{
+              expandedRowRender
+            }}
+            scroll={{ x: 1500 }}
+            title={() => 'Header'}
+            footer={() => 'Footer'}
+          /> : ''}
       </div>
     </div>
   );

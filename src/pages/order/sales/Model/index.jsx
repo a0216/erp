@@ -27,7 +27,6 @@ const Model = props => {
             return item;
           })
           changeWareList(res.data)
-         
         }
       })
 
@@ -72,7 +71,6 @@ const Model = props => {
         //     handleAdd(res.code);
         //     console.log(res);
         // })
-      
     };
 
     return (

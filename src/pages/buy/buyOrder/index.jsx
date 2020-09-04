@@ -44,7 +44,7 @@ export default () => {
   }
 
   const getData = (types) => {
-    payment({ method: 'get' }, `?put=${types}`).then((res) => {
+    payment( `?put=${types}`).then((res) => {
       if (res.code == '200') {
         changepayment(res.data.data.map(item => {
           item.key = item.id;
@@ -213,7 +213,7 @@ export default () => {
     if (fieldsValue.skuName) {
       url += `&skuName=${fieldsValue.skuName}`
     }
-    payment({ method: 'get' }, url).then(res => {
+    payment(url).then(res => {
       if (res.code == '200') {
         changepayment(res.data.data.map(item => {
           item.key = item.id;
@@ -305,6 +305,10 @@ export default () => {
                 style={{
                   width: 180,
                 }}
+                showSearch
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {shopLists.map(res => {
                   return <Option value={res.id} key={res.id}>{res.name}</Option>
@@ -323,6 +327,10 @@ export default () => {
                 style={{
                   width: 180,
                 }}
+                showSearch
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {userList.map(res => {
                   return <Option value={res.id}>{res.name}</Option>
@@ -331,7 +339,7 @@ export default () => {
             </FormItem>
           </Col>
           <Col className="gutter-row" span={4}>
-            <Button type="primary" shape="" onClick={search}>
+            <Button type="primary" shape="" onClick={()=>search(types)}>
               搜索
             </Button>
           </Col>
@@ -347,6 +355,10 @@ export default () => {
                   width: 180,
                 }}
                 placeholder='请选择'
+                showSearch
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {wareList.map(res => {
                   return <Option value={res.id} key={res.id}>{res.name}</Option>

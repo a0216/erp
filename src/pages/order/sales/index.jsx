@@ -29,21 +29,26 @@ const AdvancedForm = ({ submitting, dispatch }) => {
 
   const getData = () => {
     shopList({ method: "GET" }, '?property=2').then(res => {
-      if (res.code == '200') {
-        changeShopList(res.data.map(item => {
-          item.key = item.id;
-          return item
-        }))
+      if (res) {
+        if (res.code == '200') {
+          changeShopList(res.data.map(item => {
+            item.key = item.id;
+            return item
+          }))
+        }
       }
     })
-    productList({ method: 'get' }).then(res => {
-      if (res.code == '200') {
-        changeList(res.data.map(item => {
-          item.key = item.id;
-          return item
-        }))
-      }
-    })
+    // productList({ method: 'get' }).then(res => {
+    //   console.log(res)
+    //   if (res) {
+    //     if (res.code == '200') {
+    //       changeList(res.data.data.map(item => {
+    //         item.key = item.id;
+    //         return item
+    //       }))
+    //     }
+    //   }
+    // })
     saleUser({ method: 'GET' }).then(res => {
       if (res.code == '200') {
         changeUser(res.data.map(item => {
@@ -65,7 +70,7 @@ const AdvancedForm = ({ submitting, dispatch }) => {
   const handleAdds = (e) => {
     // const [allPrice,changePrice]=useState(0)
     e.map(res => {
-    
+
     })
     sendList(e)
   }
@@ -86,21 +91,21 @@ const AdvancedForm = ({ submitting, dispatch }) => {
     data.full_address = fieldsValue.full_address;
     data.user_id = fieldsValue.user_id;
     data.comment = fieldsValue.comment;
-    sendLists.map(res=>{
-      res.all=res.all*100;
-      res.discount=res.discount*100;
-      res.openPrice=res.openPrice*100;
-      
+    sendLists.map(res => {
+      res.all = res.all * 100;
+      res.discount = res.discount * 100;
+      res.openPrice = res.openPrice * 100;
+
       return res;
     })
     data.skuList = sendLists;
     data.store_id = fieldsValue.store_id;
-    data.all=allPrice*100;
+    data.all = allPrice * 100;
     addOrder({ method: 'POST', data: data }).then(res => {
       if (res.code == '200') {
         message.success('请求成功')
         // fromPairs.res
-        form.resetFields(); 
+        form.resetFields();
       } else {
         message.error('请查证后再试')
 
@@ -193,7 +198,12 @@ const AdvancedForm = ({ submitting, dispatch }) => {
                     },
                   ]}
                 >
-                  <Select placeholder="请选择销售经理">
+                  <Select placeholder="请选择销售经理"
+                    showSearch
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
                     {saleUsers.map(res => {
                       return <Option value={res.id}>{res.name}</Option>
 
@@ -205,9 +215,13 @@ const AdvancedForm = ({ submitting, dispatch }) => {
                 <Form.Item
                   label='销售商家'
                   name="store_id"
-               
+
                 >
-                  <Select placeholder="请选择销售商家">
+                  <Select placeholder="请选择销售商家"
+                    showSearch
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }>
                     {shopLists.map(res => {
                       return <Option value={res.id}>{res.name}</Option>
 
@@ -229,7 +243,7 @@ const AdvancedForm = ({ submitting, dispatch }) => {
                   <Input placeholder="请输入商品商家" />
                 </Form.Item>
               </Col> */}
-              <Button type="primary" onClick={() => {handleModalVisible(true)}}>
+              <Button type="primary" onClick={() => { handleModalVisible(true) }}>
                 添加商品
             </Button>
             </Row>
@@ -263,7 +277,7 @@ const AdvancedForm = ({ submitting, dispatch }) => {
           </Table>
         </PageHeaderWrapper>
         {/* {getErrorInfo(error)} */}
-        <br/>
+        <br />
         <Row gutter={16}>
           <Col lg={6} md={6} sm={12}>
             <h1 style={{ 'font-weight': '600' }}><span>总计:{allPrice}</span> <span>补差总计:{reduces}</span>   </h1>

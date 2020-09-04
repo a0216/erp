@@ -17,6 +17,7 @@ export default () => {
   const [list, setlist] = useState([]);
   const [categoryList, changecategory] = useState([])
   const [brandList, changebrand] = useState([])
+  const [total,addTotal]=useState({})
   const [form] = Form.useForm();
   const FormItem = Form.Item;
 
@@ -29,8 +30,9 @@ export default () => {
     }
   }
   const getData = (e) => {
-    getProduct({ 'method': 'GET' }).then(res => {
+    getProduct(e).then(res => {
       if (res.code == '200') {
+        addTotal(res.data)
         setlist(res.data.data)
       }
     })
@@ -38,7 +40,7 @@ export default () => {
   const reast=e=>{
     message.loading('已重置',1)
     form.resetFields(); 
-    getData()
+    getData(1)
   }
   const exportThis=async()=>{
     const fieldsValue = await form.validateFields();
@@ -138,7 +140,7 @@ export default () => {
     setTimeout(() => {
       setLoading(false);
     }, 500);
-    getData()
+    getData(1)
   }, []);
   return (
     <PageHeaderWrapper content="" className={styles.main}>
@@ -180,6 +182,10 @@ export default () => {
                 style={{
                   width: 180,
                 }}
+                showSearch
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {brandList.map(res => {
                   return <Option value={res.id} key={res.key}>{res.name}</Option>
@@ -197,6 +203,10 @@ export default () => {
                 style={{
                   width: 180,
                 }}
+                showSearch
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {categoryList.map(res => {
                   return <Option value={res.id} key={res.key}>{res.name}</Option>
@@ -253,7 +263,7 @@ export default () => {
           const success = await handleAdd(value);
           if (success) {
             handleModalVisible(false);
-            actionRef.current();
+            actionRef.current(1);
           }
         }}
         onCancel={() => handleModalVisible(false)}
@@ -263,6 +273,7 @@ export default () => {
       <TableBordered
         list={list}
         actionRef={actionRef}
+        total={total}
       />
       <div
         style={{

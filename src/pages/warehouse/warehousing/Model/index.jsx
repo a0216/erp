@@ -50,7 +50,7 @@ const Model = props => {
             }
         })
         getWare()
-        getData();
+        // getData();
 
     }, [])
     const okHandle = async () => {

@@ -8,9 +8,10 @@ const Modelb = props => {
     const { TextArea } = Input;
     const { modalVisible, onSubmit: handleAdd, onCancel } = props;
     const [nowMsg, changenowMsg] = useState();
+    const [nowMsgs, changeSendMsg] = useState();
     const changeMsg=(e)=>{
-        e.persist()
-        changenowMsg(e.target.value)
+        // e.persist()
+        changeSendMsg(e.target.value)
     }
     const getData = () => {
         if (props.nowId == '1') {
@@ -19,7 +20,6 @@ const Modelb = props => {
                         changenowMsg(res.data)
                 })
             }
-
         } else {
             if (props.skuId) {
                 getTb(props.skuId.id).then(res => {
@@ -28,20 +28,16 @@ const Modelb = props => {
             }
         }
     }
-
     useEffect(() => {
         getData()
-    }, [props.nowMsg]);
-
+    }, [props]);
     // const [sendList, pushList] = useState()
-
     const okHandle = async () => {
-        // const fieldsValue = await form.validateFields();
         let data = {}
         data.skuId = props.skuId.id;
         if (props.nowId == '1') {
-            if(nowMsg){
-                data.jdId = nowMsg;
+            if(nowMsgs){
+                data.jdId = nowMsgs;
                 addJd({ method: 'POST', data: data }).then(res => {
                     if (res.code == '200') {
                         onCancel()
@@ -52,11 +48,12 @@ const Modelb = props => {
             }
           
         } else {
-            if(nowMsg){
-                data.tbId = nowMsg;
+            if(nowMsgs){
+                data.tbId = nowMsgs;
                 addTb({ method: 'POST', data: data }).then(res => {
                     if (res.code == '200') {
                         onCancel()
+                        form.resetFields();
                     }
                 })
             }else{
@@ -78,10 +75,10 @@ const Modelb = props => {
                         {/* <FormItem
                             label="商品: "
                             name="productId"
-                            defaultValue={nowMsg}
+                        
                         > */}
                             <TextArea rows={4}
-                                placeholder='绑定商品，多个以英文逗号分隔'  value={nowMsg}  onChange={changeMsg}/>
+                                placeholder='绑定商品，多个以英文逗号分隔'    defaultValue={nowMsg}  onChange={changeMsg}/>
                         {/* </FormItem> */}
                     </Col>
                 </Row>

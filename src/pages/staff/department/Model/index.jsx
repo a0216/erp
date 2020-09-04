@@ -8,20 +8,20 @@ const FormItem = Form.Item;
 const Model = props => {
     const [form] = Form.useForm();
 
-    let title="新建部门"
-    if(props.type=='2'){
-        title="修改部门"
+    let title = "新建部门"
+    if (props.type == '2') {
+        title = "修改部门"
         form.setFieldsValue({
             'name': props.names
         })
-    }else{
-        title="新建部门"
+    } else {
+        title = "新建部门"
     }
     const { modalVisible, onSubmit: handleAdd, onCancel } = props;
     const okHandle = async () => {
         const fieldsValue = await form.validateFields();
-        if(props.type=='1'){
-            addCompany({ method: 'POST', data: { 'name': fieldsValue.name } }).then(res => {
+        if (props.type == '1') {
+            addCompany({ method: 'POST', data: { 'name': fieldsValue.name, 'comment': fieldsValue.code } }).then(res => {
                 if (res.code == '200') {
                     handleAdd(res.code)
                     notification.open({
@@ -32,8 +32,8 @@ const Model = props => {
                     onCancel(fieldsValue)
                 }
             })
-        }else{
-            changeCompany({ method: 'POST', data: { 'name': fieldsValue.name,id	:props.id } }).then(res => {
+        } else {
+            changeCompany({ method: 'POST', data: { 'name': fieldsValue.name, id: props.id, 'comment': fieldsValue.code } }).then(res => {
                 if (res.code == '200') {
                     handleAdd(res.code)
                     notification.open({
@@ -45,7 +45,7 @@ const Model = props => {
                 }
             })
         }
-        
+
         // form.resetFields();
     };
     return (
@@ -55,7 +55,7 @@ const Model = props => {
             visible={modalVisible}
             onOk={okHandle}
             onCancel={() => onCancel()}
-            getContainer={false} 
+            getContainer={false}
 
         // cancelButtonProps={{ disabled: true }}
         >

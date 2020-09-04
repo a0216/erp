@@ -6,7 +6,7 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 import Modela from '../Model'
 const { confirm } = Modal;
 import Modelb from './Model'
-import { goodsDel, getJd, getTb } from '../../api'
+import { goodsDel, getJd, getTb, getProduct } from '../../api'
 
 const handleAdd = async fields => {
   const hide = message.loading('正在添加');
@@ -25,8 +25,6 @@ const handleAdd = async fields => {
   }
 
 };
-
-
 
 const TableBordered = props => {
   const [nowMsg, changenowMsg] = useState('');
@@ -59,13 +57,15 @@ const TableBordered = props => {
     });
   }
   localStorage.setItem('productList', JSON.stringify(props.list))
-  const [tableList, changeList] = useState(props.list)
+  // const [tableList, changeList] = useState(props.list)
   const [createModalVisible, handleModalVisible] = useState(false);
   const [createModalVisibleb, handleModalVisibleb] = useState(false);
   const [nowId, changeId] = useState();
   const [skuId, changeSku] = useState();
   const [names, changeName] = useState();
-  const [type, addOrch] = useState('1');
+  const [total, addTotal] = useState({})
+  const [send, adDSend] = useState(1)
+  const [tableList, setlist] = useState([]);
   const getThis = (e, ids) => {
     changeId(e)
     changeSku(ids)
@@ -86,7 +86,30 @@ const TableBordered = props => {
       })
     }
   }
+  const getData = (e) => {
+    getProduct(e).then(res => {
+      if (res.code == '200') {
+        addTotal(res.data)
+        setlist(res.data.data.map(item => {
+          item.key = item.id;
+          return item
+        }))
+      }
+    })
+  }
+  const sendMsg = (e, id) => {
+    let arr=JSON.stringify(tableList);
+    JSON.parse(arr).map(res=>{
+      if(res.id==id){
+        changeName(res)
+      }
+    })
+  }
+  useEffect(() => {
+    getData(1)
+  }, [])
   const expandedRowRender = (record) => {
+
     const columns = [
       { title: '商品名称', dataIndex: 'name', key: 'name' },
       { title: '商品编码', dataIndex: 'code', key: 'name' },
@@ -151,10 +174,9 @@ const TableBordered = props => {
     },
     {
       title: '操作',
-      key: 'category',
       render: (text, record) => (
         <span>
-          <a style={{ marginRight: 16 }} onClick={() => { handleModalVisible(true); changeName(record); }}>修改</a>
+          <a style={{ marginRight: 16 }} onClick={() => { handleModalVisible(true); sendMsg(record, record.id); }}>修改</a>
           {/* <a style={{ marginRight: 16 }}>删除</a> */}
           <a onClick={() => { delConfirm(record.id); }}>删除</a>
         </span>
@@ -163,25 +185,36 @@ const TableBordered = props => {
   ];
 
   return (
-    <div className={styles.container}>
+    <div >
       <div id="components-table-demo-bordered">
-        <Table
-          columns={columns}
-          dataSource={props.list}
-          bordered
-          expandable={{
-            expandedRowRender
-          }}
-          title={() => '商品列表'}
-          footer={() => 'Footer'}
-        >
-        </Table>
+        {tableList && tableList.length > 0 ?
+          <Table
+            columns={columns}
+            dataSource={tableList}
+            bordered
+            defaultExpandAllRows={true}
+            expandable={{
+              expandedRowRender
+            }}
+            pagination={{
+              showSizeChanger: false,//设置每页显示数据条数
+              showQuickJumper: false,
+              pageSize: total.per_page,
+              showTotal: () => `共${total.total}条`,
+              total: total.total,  //数据的总的条数
+              defaultCurrent: 1,
+              onChange: (current) => { getData(current); }, //点击当前页码
+            }}
+            title={() => '商品列表'}
+            footer={() => 'Footer'}
+          >
+          </Table> : ''}
         <Modela
           onSubmit={async value => {
             const success = await handleAdd(value);
             if (success) {
               handleModalVisible(false);
-              props.actionRef.current();
+              props.actionRef.current(1);
             }
           }}
           nowMsg={names}
@@ -200,7 +233,7 @@ const TableBordered = props => {
           skuId={skuId}
           nowId={nowId}
           nowMsg={nowMsg}
-          onCancel={() => { handleModalVisibleb(false); }}
+          onCancel={() => { handleModalVisibleb(false); changeName() }}
           modalVisible={createModalVisibleb}
         />
 

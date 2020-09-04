@@ -135,6 +135,10 @@ export default () => {
                   width: 180,
                 }}
                 placeholder="请选择"
+                showSearch
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {shopLista.map(res => {
                   return <Option value={res.id} key={res.key}>{res.item}</Option>

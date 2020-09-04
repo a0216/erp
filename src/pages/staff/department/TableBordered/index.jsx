@@ -74,7 +74,7 @@ const TableBordered = props => {
     },
     {
       title: '备注',
-      dataIndex: 'id',
+      dataIndex: 'comment',
     },
     {
       title: '操作',
@@ -101,11 +101,14 @@ const TableBordered = props => {
             return res
           })}
           key={props.tableList.id}
-          onRow={record => {
-            return {
-              onClick: event => { changeThis }, // 点击行
-
-            };
+          pagination={{
+            showSizeChanger: false,//设置每页显示数据条数
+            showQuickJumper: false,
+            showTotal: () => `共${props.total.total}条`,
+            pageSize:props.total.pageSize,
+            total: props.total.total,  //数据的总的条数
+            defaultCurrent: 1,
+            onChange: (current) => {props.actionRef.current(current); }, //点击当前页码
           }}
           bordered
           expandable={{

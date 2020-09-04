@@ -27,8 +27,6 @@ const EditableCell = ({
 }) => {
   const [editing, setEditing] = useState(false);
 
-
-
   const inputRef = useRef();
   const form = useContext(EditableContext);
   useEffect(() => {
@@ -101,11 +99,9 @@ class EditableTable extends React.Component {
       dataSource: nowList,
     });
 
-
   }
   constructor(props) {
     super(props);
-
     this.columns = [
       {
         title: '商品编码',
@@ -191,7 +187,6 @@ class EditableTable extends React.Component {
   }
   changeSelects = e => {
     let newArr = this.state.dataSource;
-
     newArr.map(res => {
       if (res.id == e.id) {
         res.warehouseId = this.state.wareId

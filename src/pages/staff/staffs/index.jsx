@@ -54,11 +54,7 @@ const FormItem = Form.Item;
     // searchUser
   }
   const getData = () => {
-    getUser({ method: "GET", data: { size: 20 } }).then(res => {
-      if (res.code == '200') {
-        changeUser(res.data.data)
-      }
-    })
+ 
     getList({ method: "GET" },'').then(res => {
       if (res.code == '200') {
         changeList(res.data.data)
@@ -92,6 +88,10 @@ const FormItem = Form.Item;
                 }}
                 defaultValue='全部'
                 onChange={handleChange}
+                showSearch
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 {departList.map(res => {
                   return <Option value={res.id} key={res.id}>{res.name}</Option>
@@ -109,6 +109,10 @@ const FormItem = Form.Item;
                   width: 180,
                 }}
                 defaultValue='请选择'
+                showSearch
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
               >
                 <Option value='1' >正常</Option>
                 <Option value='0' >冻结</Option>

@@ -16,7 +16,6 @@ const Modela = props => {
     const [form] = Form.useForm();
     let title = "新增商品"
     const { modalVisible, onSubmit: handleAdd, onCancel } = props;
-
     if (props.type == '2') {
         title = "修改商品"
         if (props.nowMsg) {

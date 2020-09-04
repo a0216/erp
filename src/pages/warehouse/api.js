@@ -12,8 +12,9 @@ export async function getWareList(data,e) {
     return request(`/warehouse/inventory/list${e}`, data);
 }
 export async function productList(data) {
-    return request('/goods/listSku', data);
+    return request(`/goods/listSku${data}`, {method:'get'});
 }
+
 export async function toPayment(data) {
     return request('/warehouse/payment/put', data);
 }
