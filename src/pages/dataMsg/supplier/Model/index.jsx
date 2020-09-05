@@ -207,11 +207,11 @@ const Modela = props => {
                             rules={[
                                 {
                                     required: true,
-                                    message: '请输入仓库地址',
+                                    message: '请输入地址',
                                 },
                             ]}
                         >
-                            <Input placeholder="请输入仓库地址"
+                            <Input placeholder="请输入地址"
                                 style={{
                                     width: 600,
                                 }}

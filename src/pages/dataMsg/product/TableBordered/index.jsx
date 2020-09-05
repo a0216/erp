@@ -28,10 +28,6 @@ const handleAdd = async fields => {
 
 const TableBordered = props => {
   const [nowMsg, changenowMsg] = useState('');
-  props.list.map(res => {
-    res.key = res.id;
-    return res;
-  })
 
   const delConfirm = (e) => {
     confirm({
@@ -57,15 +53,12 @@ const TableBordered = props => {
     });
   }
   localStorage.setItem('productList', JSON.stringify(props.list))
-  // const [tableList, changeList] = useState(props.list)
   const [createModalVisible, handleModalVisible] = useState(false);
   const [createModalVisibleb, handleModalVisibleb] = useState(false);
   const [nowId, changeId] = useState();
   const [skuId, changeSku] = useState();
   const [names, changeName] = useState();
-  const [total, addTotal] = useState({})
   const [send, adDSend] = useState(1)
-  const [tableList, setlist] = useState([]);
   const getThis = (e, ids) => {
     changeId(e)
     changeSku(ids)
@@ -86,28 +79,15 @@ const TableBordered = props => {
       })
     }
   }
-  const getData = (e) => {
-    getProduct(e).then(res => {
-      if (res.code == '200') {
-        addTotal(res.data)
-        setlist(res.data.data.map(item => {
-          item.key = item.id;
-          return item
-        }))
-      }
-    })
-  }
   const sendMsg = (e, id) => {
-    let arr=JSON.stringify(tableList);
+    let arr=JSON.stringify(props.list);
     JSON.parse(arr).map(res=>{
       if(res.id==id){
         changeName(res)
       }
     })
   }
-  useEffect(() => {
-    getData(1)
-  }, [])
+
   const expandedRowRender = (record) => {
 
     const columns = [
@@ -149,10 +129,6 @@ const TableBordered = props => {
     })
     return <Table columns={columns} dataSource={data} pagination={false} key={data.id} />;
   };
-  useEffect(() => {
-
-
-  }, []);
 
   const columns = [
     {
@@ -183,32 +159,31 @@ const TableBordered = props => {
       ),
     },
   ];
-
   return (
     <div >
       <div id="components-table-demo-bordered">
-        {tableList && tableList.length > 0 ?
+        {props.list && props.list.length
+          ?
           <Table
             columns={columns}
-            dataSource={tableList}
+            dataSource={props.list}
             bordered
             defaultExpandAllRows={true}
-            expandable={{
-              expandedRowRender
-            }}
+            expandable={{expandedRowRender}}
             pagination={{
               showSizeChanger: false,//设置每页显示数据条数
               showQuickJumper: false,
-              pageSize: total.per_page,
-              showTotal: () => `共${total.total}条`,
-              total: total.total,  //数据的总的条数
+              pageSize: props.total.per_page,
+              showTotal: () => `共${props.total.total}条`,
+              total: props.total.total,  //数据的总的条数
               defaultCurrent: 1,
-              onChange: (current) => { getData(current); }, //点击当前页码
+              onChange: (current) => { props.getData(current); }, //点击当前页码
             }}
             title={() => '商品列表'}
             footer={() => 'Footer'}
           >
-          </Table> : ''}
+          </Table>
+          : '暂无数据'}
         <Modela
           onSubmit={async value => {
             const success = await handleAdd(value);
@@ -221,6 +196,7 @@ const TableBordered = props => {
           onCancel={() => { handleModalVisible(false); changeName() }}
           modalVisible={createModalVisible}
           type={'2'}
+          getDataList={props.getData}
         />
         <Modelb
           onSubmit={async value => {
@@ -235,6 +211,7 @@ const TableBordered = props => {
           nowMsg={nowMsg}
           onCancel={() => { handleModalVisibleb(false); changeName() }}
           modalVisible={createModalVisibleb}
+          getDataList={props.getData}
         />
 
       </div>

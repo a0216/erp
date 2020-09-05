@@ -119,6 +119,9 @@ class EditableTable extends React.Component {
         editable: true,
         render: (text) => {
           return <InputNumber min={0} step={0.01} value={text} 
+          style={{
+            width:'100%',
+          }}
           formatter={limitDecimalsF}
           parser={limitDecimalsP} 
           />
@@ -130,6 +133,9 @@ class EditableTable extends React.Component {
         editable: true,
         render: (text) => {
           return <InputNumber min={0} step={0.01} value={text}
+          style={{
+            width:'100%',
+          }}
           formatter={limitDecimalsF}
           parser={limitDecimalsP} 
           />
@@ -141,6 +147,9 @@ class EditableTable extends React.Component {
         editable: true,
         render: (text) => {
           return <InputNumber min={0} step={0.01} value={text}
+          style={{
+            width:'100%',
+          }}
           formatter={limitDecimalsF}
           parser={limitDecimalsP} 
            />

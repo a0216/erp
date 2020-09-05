@@ -21,23 +21,22 @@ const Model = props => {
     const [nowLists, changenowLists] = useState([])
     const [wareList, changeWareList] = useState([])
     const [upList, changeUplist] = useState([])
-
-    const getData = () => {
-        productList({ method: 'get' }).then((res) => {
+    const [nowMsg,allMsg]=useState({})
+    const handleAdds = (e) => {
+        changenowLists(e)
+    }
+    const getData = (page,code) => {
+        productList(`?page=${page}&code=${code}`).then((res) => {
             if (res) {
                 if (res.code == '200') {
-                    changeList(res.data.map(item => {
+                    allMsg(res.data)
+                    changeList(res.data.data.map(item => {
                         item.key = item.id;
                         return item;
                     }))
                 }
             }
-
         })
-
-    }
-    const handleAdds = (e) => {
-        changenowLists(e)
     }
     useEffect(() => {
         request('/shop/list?property=1', { method: 'GET' }).then((res) => {
@@ -49,7 +48,7 @@ const Model = props => {
                 changeshopList(res.data)
             }
         })
-        // getData();
+        getData('1','');
 
     }, [])
     useEffect(() => {
@@ -75,7 +74,6 @@ const Model = props => {
         data.fare = fieldsValue.freight * 100;
         data.shopId = fieldsValue.send;
         data.comment= fieldsValue.comment;
-        console.log(sendList)
         sendList.map(res => {
             res.all = res.all * 100;
             res.reduce = res.reduce * 100;
@@ -95,7 +93,6 @@ const Model = props => {
                 }
                 handleAdd(res.code);
                 // form.resetFields();
-
             })
         } else {
             sendPay({ method: 'POST', data: data }).then(res => {
@@ -105,7 +102,6 @@ const Model = props => {
                 }
                 handleAdd(res.code);
                 // form.resetFields();
-
             })
         }
 
@@ -201,6 +197,8 @@ const Model = props => {
                             handleAdds={handleAdds}
                             product={product}
                             changeList={changeList}
+                            getData={getData}
+                            nowMsg={nowMsg}
                             onCancel={() => handleModalVisible(false)}
                             modalVisible={createModalVisible}
                         />

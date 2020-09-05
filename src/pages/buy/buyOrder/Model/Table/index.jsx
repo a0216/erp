@@ -179,6 +179,7 @@ class EditableTable extends React.Component {
         render: (text) => {
           return <InputNumber min={0} step={0.01} value={text}
             formatter={limitDecimalsF}
+            style={{width:'100%'}}
             parser={limitDecimalsP}
           />
         }
@@ -192,6 +193,7 @@ class EditableTable extends React.Component {
         render: (text) => {
           return <InputNumber min={0} step={0.01} value={text}
             formatter={limitDecimalsF}
+            style={{width:'100%'}}
             parser={limitDecimalsP}
           />
         }
@@ -268,12 +270,23 @@ class EditableTable extends React.Component {
   }
   onThis = e => {
     this.state.wareId = e.key;
-    arrs=this.state.dataSource
+   
+  }
+  componentDidUpdate(prevProps,prevState){
+  
+    prevState.dataSource.map(res=>{
+      if(res.warehouseId!='0'){
+        this.setState({
+          dataSource: prevState.dataSource
+        })
+        prevProps.toSend(prevState.dataSource)
+      }
+    })
+    // if()
   }
   changeSelects = e => {
     let arrlist=[]
     let newArr = this.state.dataSource;
-    console.log(newArr)
     newArr.map(res => {
       if (res.id == e.id) {
         res.warehouseId = this.state.wareId;
@@ -284,8 +297,9 @@ class EditableTable extends React.Component {
       return res
     })
     this.setState({
-      dataSource: arrlist
+      dataSource:newArr
     })
+ 
   }
 
   handleDelete = key => {
@@ -298,7 +312,6 @@ class EditableTable extends React.Component {
 
   handleAdd = () => {
     const { count, dataSource } = this.state;
-    console.log(dataSource)
     const newData = {
       key: count,
     };
@@ -309,7 +322,6 @@ class EditableTable extends React.Component {
   };
 
   handleSave = row => {
-    console.log(row)
     if (row.bidPrice && row.purchasePrice) {
       row.bidPrice = Math.floor(row.bidPrice * 100) / 100
       row.purchasePrice = Math.floor(row.purchasePrice * 100) / 100

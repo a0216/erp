@@ -30,8 +30,9 @@ const Model = props => {
         }
       })
 
-    const getData = () => {
-        productList({ method: 'get' }).then(res => {
+    const getData = (page,code) => {
+        productList(`?page=${page}&code=${code}`).then(res => {
+            console.log(1111111)
             if (res.code == '200') {
                 changeList(res.data.map(item=>{
                     item.key=item.id;
@@ -39,6 +40,7 @@ const Model = props => {
                 }))
             }
         })
+        console.log(product);
     }
     const handleAdds = (e) => {
         changenowLists(e)
@@ -53,7 +55,7 @@ const Model = props => {
             }
         })
         getWare()
-        getData();
+        getData('1');
     }, [])
     const okHandle = async () => {
         const fieldsValue = await form.validateFields();
@@ -135,7 +137,6 @@ const Model = props => {
                                 const success = await handleAdds(value);
                                 if (success) {
                                     handleModalVisible(false);
-
                                     if (actionRef.current) {
                                         actionRef.current.reload();
                                     }
@@ -144,6 +145,7 @@ const Model = props => {
                             handleAdds={handleAdds}
                             product={product}
                             changeList={changeList}
+                            getData={getData}
                             onCancel={() => handleModalVisible(false)}
                             modalVisible={createModalVisible}
                         />

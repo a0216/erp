@@ -67,7 +67,7 @@ const Modela = props => {
         getMsg("category")
         getMsg("brand")
     }, []);
- 
+
     const [sendList, pushList] = useState(list)
 
     const okHandle = async () => {
@@ -106,6 +106,7 @@ const Modela = props => {
         }
         // form.resetFields();
         pushList([])
+        props.getDataList(1)
     };
     return (
         <Modal
@@ -210,7 +211,6 @@ const Modela = props => {
                             changeList={changeList}
                             type={props.type}
                             sendList={list}
-
                         />
                     </Col>
                 </Row>

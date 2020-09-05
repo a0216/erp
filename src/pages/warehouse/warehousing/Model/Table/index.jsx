@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
-import { Table, Input, Select, Popconfirm, Form } from 'antd';
+import { Table, Input, Select, Popconfirm, Form, InputNumber } from 'antd';
 import './index.less'
 import { wareSelects } from '../../../../allNeed'
 
@@ -89,7 +89,13 @@ const EditableCell = ({
   return <td {...restProps}>{childNode}</td>;
 };
 var nowList = []
-// const 
+const limitDecimalsF = (value) => {
+  let reg = /^(-)*(\d+)\.(\d\d).*$/; return `￥ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',').replace(reg, '$1$2.$3');
+};
+const limitDecimalsP = (value) => {
+  let reg = /^(-)*(\d+)\.(\d\d).*$/;
+  return value.replace(/￥\s?|(,*)/g, '').replace(reg, '$1$2.$3');
+};
 class EditableTable extends React.Component {
   componentWillMount() {
     wareSelects({ method: "get" }).then(res => {
@@ -114,7 +120,7 @@ class EditableTable extends React.Component {
   }
   constructor(props) {
     super(props);
-  
+
     this.columns = [
       {
         title: '商品编码',
@@ -133,17 +139,33 @@ class EditableTable extends React.Component {
       {
         title: '基准价',
         dataIndex: 'cost_price',
-        render:(text)=>{
-        return <span>{text/100}</span>
+        render: (text) => {
+          return <span>{text / 100}</span>
         }
-        // editable: true,
+        // render: (text) => {
+        //   return <InputNumber min={0} step={0.01} value={text}
+        //     style={{
+        //       width: '100%',
+        //     }}
+        //     formatter={limitDecimalsF}
+        //     parser={limitDecimalsP}
+        //   />
+        // }
       },
       {
         title: '采购价',
         dataIndex: 'purchasePrice',
         editable: true,
         required: true,
-        value: ''
+        render: (text) => {
+          return <InputNumber min={0} step={0.01} value={text}
+            style={{
+              width: '100%',
+            }}
+            formatter={limitDecimalsF}
+            parser={limitDecimalsP}
+          />
+        }
 
       },
       {
@@ -167,7 +189,7 @@ class EditableTable extends React.Component {
             labelInValue
             placeholder='请选择'
             // value=''
-            onSelect={()=>this.changeSelects(record)}
+            onSelect={() => this.changeSelects(record)}
             onChange={this.onThis}
           >
             {props.wareList.map(res => {
@@ -202,25 +224,25 @@ class EditableTable extends React.Component {
       dataSource: nowList,
       count: 2,
       selectedRowKeys: props.onSelect,
-      wareId:'0'
+      wareId: '0'
     };
-    
+
   }
-  onThis=e=>{
-   this.state.wareId=e.key;
+  onThis = e => {
+    this.state.wareId = e.key;
   }
-  changeSelects=e=>{
-    let newArr=this.state.dataSource;
-    newArr.map(res=>{
-      if(res.id==e.id){
-        res.warehouseId=this.state.wareId
-        return  res;
+  changeSelects = e => {
+    let newArr = this.state.dataSource;
+    newArr.map(res => {
+      if (res.id == e.id) {
+        res.warehouseId = this.state.wareId
+        return res;
       }
       return newArr
     })
-    
+
     this.setState({
-      dataSource:newArr
+      dataSource: newArr
     })
   }
   handleDelete = key => {
@@ -245,13 +267,13 @@ class EditableTable extends React.Component {
 
   handleSave = row => {
     if (row.purchasePrice) {
-      row.purchasePrice=Math.floor(row.purchasePrice*100)/100
-      row.reduce = (row.purchasePrice*100 -row.cost_price)/100;
+      row.purchasePrice = Math.floor(row.purchasePrice * 100) / 100
+      row.reduce = (row.purchasePrice * 100 - row.cost_price) / 100;
     }
     if (row.num) {
-      row.all=Math.floor(row.purchasePrice * row.num*100)/100
+      row.all = Math.floor(row.purchasePrice * row.num * 100) / 100
     }
-   
+
     const newData = [...this.state.dataSource];
     const index = newData.findIndex(item => row.key === item.key);
     const item = newData[index];

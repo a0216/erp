@@ -30,42 +30,31 @@ export default () => {
     }
   }
   const getData = (e) => {
+    console.log('getData1');
     getProduct(e).then(res => {
       if (res.code == '200') {
         addTotal(res.data)
-        setlist(res.data.data)
+        setlist(res.data.data.map(res => {
+          res.key = res.id;
+          return res;
+        }))
       }
     })
   }
   const reast=e=>{
     message.loading('已重置',1)
-    form.resetFields(); 
+    form.resetFields();
     getData(1)
   }
   const exportThis=async()=>{
     const fieldsValue = await form.validateFields();
     let data=`/goods/search?`
-    // const serialize = function(fieldsValue) {
-      // var ary = [];
-      let arr = []
-
-      for (let i in fieldsValue){
-        arr.push(fieldsValue[i]); 
-      }
-      for(let i in arr){
-        if(arr[i]){
-          // data+=
-        }
-      }
-          
-      // return ary.join('&');
-  // };
     if(fieldsValue.code){
       data+=`&code=${fieldsValue.code}`
     }
     if(fieldsValue.brandId){
       data+=`&brandId=${fieldsValue.brandId}`
-    } 
+    }
     if(fieldsValue.categoryId){
       data+=`&categoryId=${fieldsValue.categoryId}`
     }
@@ -85,27 +74,12 @@ export default () => {
   const search = async() => {
     const fieldsValue = await form.validateFields();
     let data=`/goods/search?`
-    // const serialize = function(fieldsValue) {
-      // var ary = [];
-      let arr = []
-
-      for (let i in fieldsValue){
-        arr.push(fieldsValue[i]); 
-      }
-      for(let i in arr){
-        if(arr[i]){
-          // data+=
-        }
-      }
-          
-      // return ary.join('&');
-  // };
     if(fieldsValue.code){
       data+=`&code=${fieldsValue.code}`
     }
     if(fieldsValue.brandId){
       data+=`&brandId=${fieldsValue.brandId}`
-    } 
+    }
     if(fieldsValue.categoryId){
       data+=`&categoryId=${fieldsValue.categoryId}`
     }
@@ -114,7 +88,10 @@ export default () => {
     }
     searchGood({method:'GET'},data).then(res=>{
       if(res.code=='200'){
-        setlist(res.data.data)
+        setlist(res.data.data.map(res => {
+          res.key = res.id;
+          return res;
+        }))
       }
     })
 
@@ -135,11 +112,9 @@ export default () => {
           item.key = item.id;
           return item
         }))
+        setLoading(false);
       }
     })
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
     getData(1)
   }, []);
   return (
@@ -154,7 +129,7 @@ export default () => {
               <Input
                 placeholder="请输入商品编码"
                 style={{
-                  width: 180,
+                  width: 240,
                 }}
               />
             </FormItem>
@@ -167,7 +142,7 @@ export default () => {
               <Input
                 placeholder="请输入商品名称"
                 style={{
-                  width: 180,
+                  width: 240,
                 }}
               />
             </FormItem>
@@ -175,12 +150,12 @@ export default () => {
           <Col className="gutter-row" span={5}>
             <FormItem
               label="品牌："
-              name="brandId	"
+              name="brandId"
             >
               <Select
                 placeholder="请选择"
                 style={{
-                  width: 180,
+                  width: 240,
                 }}
                 showSearch
                 filterOption={(input, option) =>
@@ -201,7 +176,7 @@ export default () => {
               <Select
                 placeholder="请选择"
                 style={{
-                  width: 180,
+                  width: 240,
                 }}
                 showSearch
                 filterOption={(input, option) =>
@@ -274,6 +249,7 @@ export default () => {
         list={list}
         actionRef={actionRef}
         total={total}
+        getData={getData}
       />
       <div
         style={{

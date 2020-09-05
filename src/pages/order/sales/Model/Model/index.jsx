@@ -5,48 +5,36 @@ import { productList } from '../../../api'
 const FormItem = Form.Item;
 var selecList = []
 const Models = props => {
+    console.log(props)
     const [form] = Form.useForm();
-    const { modalVisible, onSubmit: handleAdds, onCancel } = props;
+    const { modalVisible, getData, onSubmit: handleAdds, onCancel } = props;
     const [nowList, changeNowlist] = useState([])
     const [nowMsg, changeMsg] = useState({})
     const [products, changeproduct] = useState([])
-    const getData = (page) => {
-        productList(`?page=${page}`).then((res) => {
-            if (res) {
-                if (res.code == '200') {
-                    changeMsg(res.data);
-                    changeproduct(res.data.data.map(item => {
-                        item.key = item.id;
-                        return item;
-                    }))
-                }
-            }
-        })
-    }
+    // const getData = (page) => {
+    //     productList(`?page=${page}`).then((res) => {
+    //         if (res) {
+    //             if (res.code == '200') {
+    //                 changeMsg(res.data);
+    //                 changeproduct(res.data.data.map(item => {
+    //                     item.key = item.id;
+    //                     return item;
+    //                 }))
+    //             }
+    //         }
+    //     })
+    // }
     const search = async () => {
         const fieldsValue = await form.validateFields();
         let code = fieldsValue.code;
-        let url = '';
-        if (code) {
-            url = `1&code=${code}`
-        }
-        productList(`?code=${code}`).then((res) => {
-            changeMsg(res.data);
-            changeproduct(res.data.data.map(item => {
-                item.key = item.id;
-                return item;
-            }))
-        })
-
+        console.log(code)
+        props.getData('1', code)
     }
     useEffect(() => {
         console.log(products)
-        let arr = products
-        changeproduct(arr)
+   
     }, [products])
-    useEffect(() => {
-        getData('1')
-    }, [])
+  
     const columns = [
         {
             title: '商品编码 ',
@@ -73,7 +61,6 @@ const Models = props => {
             dataIndex: 'comment',
         },
     ];
-
     const [selectedRowKeys, setselectedRowKeys] = useState([]);
     const onSelectChange = selectedRowKeys => {
         setselectedRowKeys(selectedRowKeys)
@@ -128,7 +115,7 @@ const Models = props => {
                         </FormItem>
                     </Col>
                     <Col lg={4} md={4} sm={24}>
-                        <Button type="primary" shape="" onClick={() => search()}>
+                        <Button type="primary" shape="" onClick={search}>
                             搜索
                         </Button>
 
@@ -137,7 +124,7 @@ const Models = props => {
             </Form>
             <Table
                 columns={columns}
-                dataSource={products}
+                dataSource={props.product}
                 rowSelection={rowSelection}
                 bordered
                 type={"1"}
