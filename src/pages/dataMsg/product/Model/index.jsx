@@ -106,7 +106,7 @@ const Modela = props => {
         }
         // form.resetFields();
         pushList([])
-        props.getDataList(1)
+        // props.getData(1)
     };
     return (
         <Modal
@@ -148,6 +148,10 @@ const Modela = props => {
                                     width: 180,
                                 }}
                                 placeholder="请选择"
+                                showSearch
+                                filterOption={(input, option) =>
+                                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                }
 
                             >
                                 {unit.map(res => {
@@ -167,6 +171,10 @@ const Modela = props => {
                                     width: 180,
                                 }}
                                 placeholder="请选择"
+                                showSearch
+                                filterOption={(input, option) =>
+                                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                }
                             >
                                 {brand.map(res => {
                                     return <Option value={res.id} key={res.key}>{res.name}</Option>
@@ -186,6 +194,10 @@ const Modela = props => {
                                     width: 180,
                                 }}
                                 placeholder="请选择"
+                                showSearch
+                                filterOption={(input, option) =>
+                                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                }
                             >
                                 {category.map(res => {
                                     return <Option value={res.id} key={res.key}>{res.name}</Option>

@@ -21,11 +21,11 @@ const Model = props => {
     const [nowLists, changenowLists] = useState([])
     const [wareList, changeWareList] = useState([])
     const [upList, changeUplist] = useState([])
-    const [nowMsg,allMsg]=useState({})
+    const [nowMsg, allMsg] = useState({})
     const handleAdds = (e) => {
         changenowLists(e)
     }
-    const getData = (page,code) => {
+    const getData = (page, code) => {
         productList(`?page=${page}&code=${code}`).then((res) => {
             if (res) {
                 if (res.code == '200') {
@@ -48,7 +48,7 @@ const Model = props => {
                 changeshopList(res.data)
             }
         })
-        getData('1','');
+        getData('1', '');
 
     }, [])
     useEffect(() => {
@@ -73,7 +73,7 @@ const Model = props => {
         let data = {}
         data.fare = fieldsValue.freight * 100;
         data.shopId = fieldsValue.send;
-        data.comment= fieldsValue.comment;
+        data.comment = fieldsValue.comment;
         sendList.map(res => {
             res.all = res.all * 100;
             res.reduce = res.reduce * 100;
@@ -83,7 +83,6 @@ const Model = props => {
         })
         data.skuList = sendList;
 
-        // upApply
         if (props.type == '2') {
             data.id = props.nowMsg.id;
             upApply({ method: 'POST', data: data }).then(res => {
@@ -93,6 +92,7 @@ const Model = props => {
                 }
                 handleAdd(res.code);
                 // form.resetFields();
+
             })
         } else {
             sendPay({ method: 'POST', data: data }).then(res => {
@@ -104,9 +104,7 @@ const Model = props => {
                 // form.resetFields();
             })
         }
-
     };
-
     return (
         <Modal
             destroyOnClose
@@ -134,7 +132,12 @@ const Model = props => {
                                     width: 200,
                                 }}
                                 placeholder='请选择'
+                                showSearch
+                                filterOption={(input, option) =>
+                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                }
                             >
+
                                 {shopLists.map(res => {
                                     return <Option value={res.id} key={res.id}>{res.name}</Option>
                                 })}
@@ -188,7 +191,6 @@ const Model = props => {
                                 const success = await handleAdds(value);
                                 if (success) {
                                     handleModalVisible(false);
-
                                     if (actionRef.current) {
                                         actionRef.current.reload();
                                     }

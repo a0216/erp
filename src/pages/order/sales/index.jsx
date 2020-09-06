@@ -26,7 +26,21 @@ const AdvancedForm = ({ submitting, dispatch }) => {
   const [reduces, changeReduce] = useState(0)
   const [form] = Form.useForm();
   const [error, setError] = useState([]);
+  const [nowMsg, allMsg] = useState({})
+  const getDatas = (page, code) => {
 
+    productList(`?page=${page}&code=${code}`).then((res) => {
+      if (res) {
+        if (res.code == '200') {
+          allMsg(res.data)
+          changeList(res.data.data.map(item => {
+            item.key = item.id;
+            return item;
+          }))
+        }
+      }
+    })
+  }
   const getData = () => {
     shopList({ method: "GET" }, '?property=2').then(res => {
       if (res) {
@@ -38,17 +52,7 @@ const AdvancedForm = ({ submitting, dispatch }) => {
         }
       }
     })
-    // productList({ method: 'get' }).then(res => {
-    //   console.log(res)
-    //   if (res) {
-    //     if (res.code == '200') {
-    //       changeList(res.data.data.map(item => {
-    //         item.key = item.id;
-    //         return item
-    //       }))
-    //     }
-    //   }
-    // })
+
     saleUser({ method: 'GET' }).then(res => {
       if (res.code == '200') {
         changeUser(res.data.map(item => {
@@ -76,6 +80,7 @@ const AdvancedForm = ({ submitting, dispatch }) => {
   }
   useEffect(() => {
     getData();
+    getDatas('1','');
   }, [])
 
   const onFinish = fieldsValue => {
@@ -95,6 +100,8 @@ const AdvancedForm = ({ submitting, dispatch }) => {
       res.all = res.all * 100;
       res.discount = res.discount * 100;
       res.openPrice = res.openPrice * 100;
+      res.getPrice = res.getPrice * 100;
+      
 
       return res;
     })
@@ -253,7 +260,6 @@ const AdvancedForm = ({ submitting, dispatch }) => {
               const success = await handleAdds(value);
               if (success) {
                 handleModalVisible(false);
-
                 if (actionRef.current) {
                   actionRef.current.reload();
                 }
@@ -262,6 +268,8 @@ const AdvancedForm = ({ submitting, dispatch }) => {
             handleAdds={handleAdds}
             product={product}
             changeList={changeList}
+            getData={getDatas}
+            nowMsg={nowMsg}
             onCancel={() => handleModalVisible(false)}
             modalVisible={createModalVisible}
           />

@@ -2,8 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Table } from 'antd';
 import styles from './index.less';
 import Model from '../Model'
+import Models from './Model'
+import {goods} from '../../api'
 const TableBordered = props => {
   const [createModalVisible, handleModalVisible] = useState(false);
+  const [createModalVisibleb, handleModalVisibleb] = useState(false);
+  const [product, changeProduct] = useState(false);
+  const [sendMsg,changeMsg]=useState({})
+  
   const [nowMsg, changeNowMsg] = useState(false);
   const handleAdd = async (res) => {
     if (res == '200') {
@@ -11,6 +17,18 @@ const TableBordered = props => {
     } else {
       return false
     }
+  }
+  const sendGood=e=>{
+    changeMsg(e)
+    goods(e.id).then(res=>{
+      if(res.code=='200'){
+        changeProduct(res.data.map(item=>{
+          item.key=item.id;
+          return item;
+        }))
+      }
+    })
+    handleModalVisibleb(true);
   }
   const expandedRowRender = (record) => {
     const columns = [
@@ -27,7 +45,7 @@ const TableBordered = props => {
       },
       {
         title: '销售单价',
-        dataIndex: 'sale_price',
+        dataIndex: 'get_real_price',
         render: (text) => {
           return <span>{text / 100}</span>
         }
@@ -117,6 +135,8 @@ const TableBordered = props => {
       title: '操作', render: (text, record) => (
         <span>
           {record.pay_type == '1' ? <a onClick={() => { changeNowMsg(record); handleModalVisible(true) }}>付款</a> : ""}
+          <br/>
+          {record.status == '0' ? <a onClick={() => { changeNowMsg(record);sendGood(record) }}>发货</a> : ""}
         </span>
       ),
     },
@@ -140,6 +160,23 @@ const TableBordered = props => {
         >
 
         </Model>
+        <Models
+          onSubmit={async value => {
+            const success = await handleAdd(value);
+            if (success) {
+              handleModalVisibleb(false);
+              props.actionRef.current('',1)
+            }
+          }}
+          onCancel={() => handleModalVisibleb(false)}
+          modalVisible={createModalVisibleb}
+          type={"2"}
+          lists={props.lists}
+          store={props.store}
+          nowMsg={sendMsg}
+          product={product}
+          // storeId={storeId}
+        />
         {props.list && props.list.length > 0 ?
           <Table
             defaultExpandAllRows={true}
@@ -150,8 +187,17 @@ const TableBordered = props => {
               expandedRowRender
             }}
             scroll={{ x: 1500 }}
-            title={() => 'Header'}
-            footer={() => 'Footer'}
+            title={() => '销售订单'}
+            pagination={{
+              showSizeChanger: false,//设置每页显示数据条数
+              showQuickJumper: false,
+              showTotal: () => `共${props.allMsg.total}条`,
+              pageSize: '10',
+              total: props.allMsg.total,  //数据的总的条数
+              defaultCurrent: 1,
+              current:props.allMsg.current_page,
+              onChange: (current) => { props.getData(current);props.changePage(current) }, //点击当前页码
+            }}             
           /> : ''}
       </div>
     </div>

@@ -2,46 +2,34 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Modal, Select, Row, Col, Button, Typography, notification, message } from 'antd';
 import Table from './Table'
 import Models from './Model'
-import { shopList ,wareSelects} from '../../../allNeed'
+import { shopList, wareSelects } from '../../../allNeed'
 const { Option } = Select
 import { productList } from '../../api'
-
-
 const FormItem = Form.Item;
 const Model = props => {
     const [form] = Form.useForm();
     const { modalVisible, onSubmit: handleAdd, onCancel, onCheckAllChange, onChanges } = props;
     // cancelButtonProps={{ disabled: true }}
-    const [product, changeList] = useState([]);
     const [sendList, toSend] = useState([]);
     const [onSelect, changeSelect] = useState([]);
     const [shopLists, changeshopList] = useState([]);
     const [createModalVisible, handleModalVisible] = useState(false);
     const [nowLists, changenowLists] = useState([])
     const [wareList, changeWareList] = useState([])
-
-   const getWare=()=> wareSelects({ method: "get" }).then(res => {
+    const [product, changeList] = useState([]);
+    const [nowMsg, allMsg] = useState({})
+  
+    const getWare = () => wareSelects({ method: "get" }).then(res => {
         if (res.code == '200') {
-          res.data.map(item => {
-            item.key = item.id;
-            return item;
-          })
-          changeWareList(res.data)
+            res.data.map(item => {
+                item.key = item.id;
+                return item;
+            })
+            changeWareList(res.data)
         }
-      })
+    })
 
-    const getData = (page,code) => {
-        productList(`?page=${page}&code=${code}`).then(res => {
-            console.log(1111111)
-            if (res.code == '200') {
-                changeList(res.data.map(item=>{
-                    item.key=item.id;
-                    return item
-                }))
-            }
-        })
-        console.log(product);
-    }
+
     const handleAdds = (e) => {
         changenowLists(e)
     }
@@ -55,7 +43,7 @@ const Model = props => {
             }
         })
         getWare()
-        getData('1');
+        getData('1', '');
     }, [])
     const okHandle = async () => {
         const fieldsValue = await form.validateFields();
@@ -146,6 +134,7 @@ const Model = props => {
                             product={product}
                             changeList={changeList}
                             getData={getData}
+                            nowMsg={nowMsg}
                             onCancel={() => handleModalVisible(false)}
                             modalVisible={createModalVisible}
                         />

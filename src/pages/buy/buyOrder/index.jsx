@@ -332,8 +332,8 @@ export default () => {
                   option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
               >
-                {userList.map(res => {
-                  return <Option value={res.id}>{res.name}</Option>
+               {userList.map(res => {
+                  return <Option key={res.id} value={res.id}>{res.name}</Option>
                 })}
               </Select>
             </FormItem>

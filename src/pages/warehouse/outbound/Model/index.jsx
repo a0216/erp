@@ -112,6 +112,10 @@ const Model = props => {
                                 placeholder='请选择'
                                 // onSelect={changeWareId(value)}
                                 onChange={changeWare}
+                                showSearch
+                                filterOption={(input, option) =>
+                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                }
                             >
                                 {wareList.map(res => {
                                     return <Option value={res.id} key={res.id}>{res.name}</Option>

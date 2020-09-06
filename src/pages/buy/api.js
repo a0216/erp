@@ -32,8 +32,8 @@ export async function exports(data,e) {
 export async function billList(e) {
     return request(`/shop/listSupply${e}`, {method:'get'});
 }
-export async function logList(id) {
-    return request(`/shop/balance/log/list?sid=${id}`, {method:'get'});
+export async function logList(id,page) {
+    return request(`/shop/balance/log/list?sid=${id}&page=${page}`, {method:'get'});
 }
 export async function detail(id) {
     return request(`/shop/balance/detail?id=${id}`, {method:'get'});

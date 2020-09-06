@@ -10,7 +10,7 @@ export async function saleUser(data) {
     return request('/shop/list?property=3', data);
 }
 export async function orderList(data) {
-    return request('/order/list', data);
+    return request(`/order/list${data}`, {method:'get'});
 }
 export async function searchOrder(data,e) {
     return request(`/order/search?${e}`, data);
@@ -21,8 +21,14 @@ export async function payType(data) {
 export async function shopList(data,send) {
     return request(`/shop/list${send}`, data);
 }
-// https://erpapi.owodian.com/api/shop/list?property=3
+export async function listGoods(data) {
+    return request(`/jd/order/listGoods${data}`, {method:'get'});
+}
 
+// https://erpapi.owodian.com/api/shop/list?property=3
+export async function goods(id) {
+    return request(`/order/list/goods?oid=${id}`, {method:'get'});
+}
 export async function payOrder(data) {
     return request('/order/pay', data);
 }
@@ -50,6 +56,9 @@ export async function shipping(data) {
 }
 export async function syncInventory(data) {
     return request(`/jd/order/syncInventory`,  data);
+}
+export async function orderShip(data) {
+    return request(`/order/shipping`,  data);
 }
 
 export async function syncState(store) {

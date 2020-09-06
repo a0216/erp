@@ -3,11 +3,24 @@ import { Table, Pagination } from 'antd';
 import styles from './index.less';
 import Model from './Model'
 import Modelb from './Modelb'
-import { getVenderCarrier } from '../../api'
+import { listGoods } from '../../api'
 const TableBordered = props => {
   const [createModalVisible, handleModalVisible] = useState(false);
   const [createModalVisibleb, handleModalVisibleb] = useState(false);
+  const [nowMsg, changeMsg] = useState();
   const [storeId, changeId] = useState();
+  const [product, changePro] = useState([])
+
+  const getData = (order, store) => {
+    listGoods(`?oid=${order}&storeId=${store}`).then(res => {
+      if (res.code == '200') {
+        changePro(res.data.map(item => {
+          item.key = item.id;
+          return item;
+        }))
+      }
+    })
+  }
   const handleAdd = (e) => {
     if (e == '200') {
       return true
@@ -130,12 +143,12 @@ const TableBordered = props => {
           if (record.type != 'fenxiao') {
             if (record.order_state == 'WAIT_SELLER_SEND_GOODS' || record.order_state == 'WAIT_SELLER_DELIVERY') {
               return <span>
-                <a style={{ marginRight: 16 }} onClick={() => { handleModalVisible(true); changeId(record.order_id) }}>发货</a>
-                <a style={{ marginRight: 16 }} onClick={() => { handleModalVisibleb(true); changeId(record.order_id) }}>同步库存</a>
+                <a style={{ marginRight: 16 }} onClick={() => { handleModalVisible(true); changeMsg(record); changeId(record.order_id); getData(record.id, record.store_id) }}>发货</a>
+                <a style={{ marginRight: 16 }} onClick={() => { handleModalVisibleb(true); changeMsg(record); changeId(record.order_id); getData(record.id, record.store_id) }}>同步库存</a>
               </span>
             }
           }
-          return <a style={{ marginRight: 16 }} onClick={() => { handleModalVisibleb(true); changeId(record.order_id) }}>同步库存</a>
+          return <a style={{ marginRight: 16 }} onClick={() => { handleModalVisibleb(true); changeMsg(record); changeId(record.order_id); getData(record.id, record.store_id) }}>同步库存</a>
 
         }
       }
@@ -164,30 +177,34 @@ const TableBordered = props => {
             const success = await handleAdd(value);
             if (success) {
               handleModalVisible(false);
-              props.actionRef.current()
+              props.actionRef.current('',1)
             }
           }}
           onCancel={() => handleModalVisible(false)}
           modalVisible={createModalVisible}
           type={"2"}
-          storeId={storeId}
           lists={props.lists}
           store={props.store}
+          nowMsg={nowMsg}
+          product={product}
+          storeId={storeId}
         />
         <Modelb
           onSubmit={async value => {
             const success = await handleAdd(value);
             if (success) {
               handleModalVisibleb(false);
-              props.actionRef.current()
+              props.actionRef.current('',1)
             }
           }}
           onCancel={() => handleModalVisibleb(false)}
           modalVisible={createModalVisibleb}
-          type={"2"}
           storeId={storeId}
           lists={props.lists}
           store={props.store}
+          nowMsg={nowMsg}
+          product={product}
+          storeId={storeId}
         />
         {props.list && props.list.length > 0 ?
           <Table

@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Modal, Select, Row, Col, Button, Table, DatePicker, message } from 'antd';
 const { Option } = Select
 
-import { shipping, getWare, listGoods } from '../../../api'
+import { orderShip, getWare, listGoods } from '../../../api'
 const FormItem = Form.Item;
-const Model = props => {
+const Models = props => {
+    console.log(props)
     const [form] = Form.useForm();
     const [lists, setlists] = useState([]);
     const [product, changePro] = useState([])
@@ -63,16 +64,14 @@ const Model = props => {
     const okHandle = async () => {
         const fieldsValue = await form.validateFields();
         let data = {}
-        let shippingTime= Math.floor(fieldsValue.date._d.getTime()/1000)
-        data.orderSn = props.nowMsg.order_id;
-        data.logiCoprId = fieldsValue.logiCoprId.key;
-        data.logiCoprName = fieldsValue.logiCoprId.label;
+        let shippingTime = Math.floor(fieldsValue.date._d.getTime() / 1000)
+        data.orderId = props.nowMsg.id;
+        data.deliveryBillId = fieldsValue.deliveryBillId;
+        data.logiCoprName = fieldsValue.logiCoprName;
         data.shippingTime = shippingTime;
         data.warehouse = sendList;
-        data.storeId = props.nowMsg.store_id;
-        data.deliveryBillId = fieldsValue.deliveryBillId;
         // data.storeId = props.store;
-        shipping({ method: 'POST', data: data }).then(res => {
+        orderShip({ method: 'POST', data: data }).then(res => {
             if (res.code == '200') {
                 message.success('请求成功')
                 onCancel()
@@ -110,7 +109,7 @@ const Model = props => {
                             label="订单单号: "
                             name="orderSn"
                         >
-                            {props.nowMsg ? <Input placeholder={props.nowMsg.order_id} readOnly
+                            {props.nowMsg ? <Input placeholder={props.nowMsg.code} readOnly
                                 style={{
                                     width: 200,
                                 }}
@@ -139,30 +138,19 @@ const Model = props => {
                     <Col lg={10} md={10} sm={24}>
                         <FormItem
                             label="物流: "
-                            name="logiCoprId"
+                            name="logiCoprName"
                             rules={[
                                 {
                                     required: true,
-                                    message: '请选择物流',
+                                    message: '请输入物流',
                                 },
                             ]}
                         >
-                            <Select
-                                labelInValue
+                            <Input placeholder='请输入'
                                 style={{
                                     width: 200,
                                 }}
-                                placeholder='请选择'
-                                showSearch
-                                filterOption={(input, option) =>
-                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                }
-                            >
-                                {props.lists.map(res => {
-                                    return <Option value={res.id} key={res.id}>{res.name}</Option>
-                                })}
-
-                            </Select>
+                            />
                         </FormItem>
                     </Col>
                     <Col lg={10} md={10} sm={24}>
@@ -176,7 +164,7 @@ const Model = props => {
                                 },
                             ]}
                         >
-                            <DatePicker/>
+                            <DatePicker />
                         </FormItem>
                     </Col>
                 </Row>
@@ -192,4 +180,4 @@ const Model = props => {
     );
 };
 
-export default Model;
+export default Models;

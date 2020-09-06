@@ -11,16 +11,18 @@ const style = {
 export default () => {
   const FormItem = Form.Item;
   const [form] = Form.useForm();
-
-
   const [loading, setLoading] = useState(true);
   const [list, changeList] = useState([]);
   const [payTypes, changepayType] = useState([]);
+  const [allMsg, changeAll] = useState([]);
+  const [page, changePage] = useState(1);
+  
   // orderList
-  const getData = () => {
-    orderList({ method: 'get' }).then(res => {
+  const getData = (page) => {
+    orderList(`?page=${page}`).then(res => {
       if (res.code == '200') {
-        changeList(res.data.map(item=>{
+        changeAll(res.data)
+        changeList(res.data.data.map(item=>{
           item.key=item.id;
           return item;
         }))
@@ -38,10 +40,10 @@ export default () => {
   const reast=e=>{
     message.loading('已重置',1)
     form.resetFields(); 
-    getData()
+    getData('1')
   }
   const exportThis = async (e) => {
-    let url = ''
+    let url = '?'
     if(e==1){
      url = '?all=1'
     }
@@ -112,7 +114,7 @@ export default () => {
   const actionRef=useRef(getData)
   const search = async () => {
     const fieldsValue = await form.validateFields();
-    let url = ''
+    let url = `?page=${page}`
     function test(s) {
       return s.charAt(s.length - 1) === '?';
     }
@@ -172,7 +174,10 @@ export default () => {
     }
     searchOrder({ method: 'GET' }, url).then(res => {
       if(res.code=='200'){
-        changeList(res.data)
+        changeList(res.data.data.map(item=>{
+          item.key=item.id;
+          return item;
+        }))
       }
     })
   }
@@ -180,7 +185,7 @@ export default () => {
     setTimeout(() => {
       setLoading(false);
     }, 500);
-    getData()
+    getData('1')
   }, []);
   return (
     <PageHeaderWrapper content="" className={styles.main}>
@@ -337,7 +342,10 @@ export default () => {
         </Row>
         <TableBordered
           list={list}
+          getData={getData}
           actionRef={actionRef}
+          allMsg={allMsg}
+          changePage={changePage}
         />
         <div
           style={{

@@ -16,9 +16,11 @@ export default props => {
     const [createModalVisibleb, handleModalVisibleb] = useState(false);
     const [createModalVisiblec, handleModalVisiblec] = useState(false);
     const [nowId, changeIds] = useState(false);
-    const getData = () => {
-        logList(props.location.query.id).then(res => {
+    const [pageMsg,changePages]=useState({})
+    const getData = (id,page) => {
+        logList(id,page).then(res => {
             if (res.code == '200') {
+                changePages(res.data)
                 setlists(res.data.data.map(item => {
                     item.key = item.id;
                     let time = new Date(item.created_at)
@@ -86,7 +88,7 @@ export default props => {
     ];
 
     useEffect(() => {
-        getData()
+        getData(props.location.query.id,1)
     }, []);
     return (
         <PageHeaderWrapper content="" className={styles.main}>
@@ -131,13 +133,23 @@ export default props => {
                 columns={columns}
                 dataSource={lists}
                 bordered
+                pagination={{
+                    showSizeChanger: false,//设置每页显示数据条数
+                    showQuickJumper: false,
+                    pageSize:pageMsg.per_page,
+                    showTotal: () => `共${pageMsg.total}条`,
+                    total: pageMsg.total,  //数据的总的条数
+                    defaultCurrent: 1,
+                    current:pageMsg.current_page,
+                    onChange: (current) => { getData(props.location.query.id,current); }, //点击当前页码
+                  }}
             ></Table>
             <Model
                 onSubmit={async value => {
                     const success = await handleAdd(value);
                     if (success) {
                         handleModalVisible(false);
-                        getData()
+                        getData(props.location.query.id,1)
                     }
                 }}
                 onCancel={() => handleModalVisible(false)}
@@ -149,7 +161,7 @@ export default props => {
                     const success = await handleAdd(value);
                     if (success) {
                         handleModalVisibleb(false);
-                        getData()
+                        getData(props.location.query.id,1)
                     }
                 }}
                 onCancel={() => handleModalVisibleb(false)}
@@ -161,7 +173,7 @@ export default props => {
                     const success = await handleAdd(value);
                     if (success) {
                         handleModalVisiblec(false);
-                        getData()
+                        getData(props.location.query.id,1)
                     }
                 }}
                 onCancel={() => handleModalVisiblec(false)}

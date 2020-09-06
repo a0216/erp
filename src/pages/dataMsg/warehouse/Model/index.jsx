@@ -175,6 +175,10 @@ const Model = props => {
                                     width: 180,
                                 }}
                                 onChange={handleMsg}
+                                showSearch
+                                filterOption={(input, option) =>
+                                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                }
                             >
                                 {wareMsg.map(res => {
                                     return <Option value={res.id}>{res.name}</Option>
@@ -199,6 +203,10 @@ const Model = props => {
                                 style={{
                                     width: 180,
                                 }}
+                                showSearch
+                                filterOption={(input, option) =>
+                                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                }
                             >
                                 {userList.map(res => {
                                     return <Option value={res.id}>{res.name}</Option>
