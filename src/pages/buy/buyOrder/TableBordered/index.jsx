@@ -130,9 +130,6 @@ const TableBordered = props => {
   const [nowMsg, changeNowMsg] = useState({})
   const [allMsg, changeAll] = useState({ 'shop': {} })
 
-  const changeNowMsgs = (e) => {
-    changeNowMsg(e)
-  }
   const changeNow = (e) => {
     paymentDetail({ method: 'get' }, `?id=${e.id}`).then(res => {
       if (res.code == '200') {
@@ -306,7 +303,7 @@ const TableBordered = props => {
     },
     {
       title: '操作', dataIndex: 'unit', key: 'name', render: (text, record) => (
-        <span>{record.update == '1' ? <a style={{ marginRight: 16 }} onClick={() => { handleModalVisible(true); changeNowMsgs(record) }}>修改</a> : ''}
+        <span>{record.update == '1' ? <a style={{ marginRight: 16 }} onClick={() => { handleModalVisible(true); changeNowMsg(record) }}>修改</a> : ''}
 
           {/* <a style={{ marginRight: 16 }}>删除</a> */}
           <a onClick={() => { delConfirm(record); }}>删除</a>

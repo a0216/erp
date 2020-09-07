@@ -102,14 +102,14 @@ class EditableTable extends React.Component {
     this.setState({
       wareList: props.wareList,
     });
-    let product=JSON.stringify(props.productList)
+    let product = JSON.stringify(props.productList)
     nowList = JSON.parse(product).map(res => {
       res.key = res.id;
       res.warehouseId = '0'
       return res;
     })
-    let upsList=JSON.stringify( props.upList)
-    upList =JSON.parse(upsList).map(res => {
+    let upsList = JSON.stringify(props.upList)
+    upList = JSON.parse(upsList).map(res => {
       res.code = res.skus.code;
       res.name = res.skus.name;
       res.color = res.skus.color;
@@ -127,7 +127,7 @@ class EditableTable extends React.Component {
           return res;
         })
         var newArr = upList.concat(props.productList);
-      
+
         this.setState({
           dataSource: newArr,
         });
@@ -179,7 +179,7 @@ class EditableTable extends React.Component {
         render: (text) => {
           return <InputNumber min={0} step={0.01} value={text}
             formatter={limitDecimalsF}
-            style={{width:'100%'}}
+            style={{ width: '100%' }}
             parser={limitDecimalsP}
           />
         }
@@ -193,7 +193,7 @@ class EditableTable extends React.Component {
         render: (text) => {
           return <InputNumber min={0} step={0.01} value={text}
             formatter={limitDecimalsF}
-            style={{width:'100%'}}
+            style={{ width: '100%' }}
             parser={limitDecimalsP}
           />
         }
@@ -209,7 +209,12 @@ class EditableTable extends React.Component {
         dataIndex: 'num',
         editable: true,
         required: true,
-        value: ''
+        render: (text) => {
+          return <InputNumber min={0} value={text}
+            style={{ width: '100%' }}
+          />
+        }
+
       },
       {
         title: '接收仓库',
@@ -220,7 +225,7 @@ class EditableTable extends React.Component {
             labelInValue
             placeholder='请选择'
             // value=''
-            onSelect={() => this.changeSelects(record)}
+            onSelect={(e) => this.changeSelects(record, e)}
             onChange={this.onThis}
             showSearch
             filterOption={(input, option) =>
@@ -270,38 +275,36 @@ class EditableTable extends React.Component {
   }
   onThis = e => {
     this.state.wareId = e.key;
+
+  }
+  // componentDidUpdate(prevProps,prevState){
+  //   prevState.dataSource.map(res=>{
+  //     if(res.warehouseId!='0'){
+  //       this.setState({
+  //         dataSource: prevState.dataSource
+  //       })
+  //       this.props.toSend(prevState.dataSource)
+  //     }
+  //   })
+  // }
+  changeSelects = (record, e) => {
    
-  }
-  componentDidUpdate(prevProps,prevState){
-  
-    prevState.dataSource.map(res=>{
-      if(res.warehouseId!='0'){
-        this.setState({
-          dataSource: prevState.dataSource
-        })
-        prevProps.toSend(prevState.dataSource)
-      }
-    })
-    // if()
-  }
-  changeSelects = e => {
-    let arrlist=[]
-    let newArr = this.state.dataSource;
+    let arr= JSON.stringify(this.state.dataSource);
+
+    let newArr = JSON.parse(arr);
     newArr.map(res => {
-      if (res.id == e.id) {
-        res.warehouseId = this.state.wareId;
-        arrlist.push(res)
-        return res;
+      if(res.id==record.id){
+        res.warehouseId=e.value;
+        return res
       }
-      arrlist.push(res)
-      return res
+
     })
     this.setState({
-      dataSource:newArr
+      dataSource: newArr
     })
- 
-  }
+    this.props.toSend(this.state.dataSource)
 
+  }
   handleDelete = key => {
     const dataSource = [...this.state.dataSource];
     let nows = dataSource.filter(item => item.key !== key)
@@ -366,7 +369,7 @@ class EditableTable extends React.Component {
       return {
         ...col,
         onCell: record => ({
-          arrs:dataSource,
+          arrs: dataSource,
           record,
           editable: col.editable,
           dataIndex: col.dataIndex,
